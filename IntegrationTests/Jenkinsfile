@@ -11,6 +11,7 @@ pipeline {
                 withEnv(["PATH=$PATH:/home/linuxbrew/.linuxbrew/bin/"]) {
                   //sh 'brew update'
                   //sh 'brew install arduino-cli'
+                  sh 'ls'
                   dir("WaziDev/tests/LoRaWAN-test/") {
                     sh 'ls'
                     sh 'arduino-cli compile -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
