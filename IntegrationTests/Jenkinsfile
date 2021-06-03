@@ -6,6 +6,9 @@ pipeline {
     }
     stages {
         stage('Prepare') {
+          sh 'pip3 install unittest-xml-reporting'
+        }
+        stage('Flash WaziDev') {
             steps {
                 dir('WaziDev'){
                     git url: 'https://github.com/Waziup/WaziDev.git'
