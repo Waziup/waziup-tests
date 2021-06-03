@@ -2,7 +2,6 @@ pipeline {
   agent any
   environment {
     ARDUINO_DIRECTORIES_USER = '/home/cdupont/Documents/Waziup/WaziDev/'
-    WAZIDEV_PORT = '/dev/ttyUSB0'
   }
   stages {
     stage('Prepare') {
