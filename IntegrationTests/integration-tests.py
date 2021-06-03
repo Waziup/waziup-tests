@@ -56,8 +56,10 @@ import logging
 import serial
 import time
 import os
+from xmlrunner import XMLTestRunner
 
-wazidev_port = server = os.getenv('WAZIDEV_PORT', '/dev/ttyUSB0')
+wazidev_port = server = os.getenv("WAZIDEV_PORT", '/dev/ttyUSB0')
+print ("WaziDev port:" + wazidev_port)
 wazidev_speed = 38400
 
 wazidev_serial = serial.Serial(wazidev_port, wazidev_speed)
@@ -114,7 +116,6 @@ auth = {
 }
 
 wazicloud_url = 'https://api.waziup.io/api/v2'
-
 
 class TestDeviceSync(unittest.TestCase):
 
@@ -187,149 +188,12 @@ class TestDeviceSync(unittest.TestCase):
         resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
         resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
 
+#suite = unittest.TestSuite()
+#suite.addTest(TestDeviceSync('Uplink tests'))
+
 if __name__ == '__main__':
     with open('results.xml', 'wb') as output:
         unittest.main(
             testRunner=xmlrunner.XMLTestRunner(output=output),
             failfast=False, buffer=False, catchbreak=False)
 
-
-
-## Function declaration
-
-#def get_request(request_url, request_json):
-#
-#    response = requests.get(request_url, data=request_json)
-#    print(response)
-#    if (response.status_code == 200):
-#        return response.text
-#    else:
-#        return 'Error'
-#
-#def post_request(request_url, request_json):
-#
-#    response = requests.post(request_url, json=request_json)
-#    print(response)
-#    if (response.status_code == 200):
-#        return response.text
-#    else:
-#        return 'Error'
-#
-#def put_request(request_url, request_data):
-#
-#    request_headers = {'Content-Type': 'application/json;charset=utf-8'}
-#    
-#    response = requests.put(request_url, headers=request_headers, data=request_data)
-#    print(response)
-#    if (response.status_code == 204):
-#        return response.text
-#    else:
-#        return 'Error'
-#
-### Main application function
-#
-#def main2():
-#    
-#    no_data = ''
-#    
-#    ## Uplink path tests
-#    
-#    # Step 1: Power on WaziDev device flashed with the 'LoRaWAN/Actuation' sketch
-#    print("Step 1: Power on WaziDev device flashed with the 'LoRaWAN/Actuation' sketch")
-#    print("Connect the WaziDev to a computer USB port and start the Arduino IDE, then open the 'Serial Monitor' from the 'Tools' menu.")
-#    input("Press Enter when done to start integration tests...")
-#    print("Step 1: 'Power on WaziDev device flashed with the 'LoRaWAN/Actuation' sketch' completed successfully.")
-#    
-#    # Step 2: Create a new LoRaWAN device on WaziGate
-#    wazigate_request_url = '%s/devices' % (wazigate_url)
-#    wazigate_response = post_request(wazigate_request_url, wazigate_create_device)
-#    if (wazigate_response != 'Error'):
-#        print("Step 2: Request Create a new LoRaWAN device on Wazigate completed successfully.")
-#    else:
-#        print("Step 2: Request Create a new LoRaWAN device on Wazigate returned an error.")
-#
-#    sleep(20)  # Wait for the LoRaWAN device to sync with WaziCloud
-#
-#    # Step 3: Check WaziGate for the presence of the new sensor and its value
-#    wazigate_request_url = '%s/devices/%s/sensors/%s' % (wazigate_url, wazigate_device_id, wazidev_sensor_id)
-#    wazigate_response = get_request(wazigate_request_url, no_data)
-#    if (wazigate_response != 'Error'):
-#        wazigate_request_url = '%s/devices/%s/sensors/%s/value' % (wazigate_url, wazigate_device_id, wazidev_sensor_id)
-#        wazigate_response = get_request(wazigate_request_url, no_data)
-#        if (wazigate_response == str(wazidev_sensor_value)):
-#            print("Step 3: Requests Check WaziGate for the presence of the new sensor and its value completed successfully.")
-#        else:
-#            print("Step 3: Request Check WaziGate for the presence of the new sensor value returned an error.")
-#    else:
-#        print("Step 3: Request Check WaziGate for the presence of the new sensor returned an error.")
-#
-#    # Step 4: Check WaziCloud for the presence of the new LoRaWAN device, sensor and its value
-#    wazicloud_request_url = '%s/devices/%s' % (wazicloud_url, wazigate_device_id)
-#    wazicloud_response = get_request(wazicloud_request_url, no_data)
-#    if (wazicloud_response != 'Error'):
-#        wazicloud_request_url = '%s/devices/%s/sensors/%s' % (wazicloud_url, wazigate_device_id, wazidev_sensor_id)
-#        wazicloud_response = get_request(wazicloud_request_url, no_data)
-#        if (wazicloud_response != 'Error'):
-#            wazicloud_request_url = '%s/devices/%s/sensors/%s/values/?limit=1' % (wazicloud_url, wazigate_device_id, wazidev_sensor_id)
-#            wazicloud_response = get_request(wazicloud_request_url, no_data)
-#            if (wazicloud_response != 'Error'):
-#                data = json.loads(wazicloud_response)
-#                sensor_data = data[0]
-#                if (sensor_data['value'] == wazidev_sensor_value):
-#                    print("Step 4: Requests Check WaziCloud for the presence of the new LoRaWAN device, sensor and its value completed successfully.")
-#                else:
-#                    print("Step 4: Request Check WaziCloud for the presence of the new sensor value returned a value mismatch.")
-#            else:
-#                print("Step 4: Request Check WaziCloud for the presence of the new sensor value returned an error.")
-#        else:
-#            print("Step 4: Request Check WaziCloud for the presence of the new sensor returned an error.")
-#    else:
-#        print("Step 4: Request Check WaziCloud for the presence of the new LoRaWAN device returned an error.")
-#
-#    # Step 5: Create a new actuator on WaziGate
-#    wazigate_request_url = '%s/devices/%s/actuators' % (wazigate_url, wazigate_device_id)
-#    wazigate_response = post_request(wazigate_request_url, wazigate_create_actuator)
-#    if (wazigate_response != 'Error'):
-#        print("Step 5: Request Create a new actuator on WaziGate completed successfully.")
-#    else:
-#        print("Step 5: Request Create a new actuator on WaziGate returned an error.")
-#
-#    sleep(10)  # Wait for the actuator to sync with WaziCloud
-#
-#    # Step 6: Check WaziCloud for the presence of the new actuator and set a value for it
-#    wazicloud_request_url = '%s/devices/%s/actuators/%s' % (wazicloud_url, wazigate_device_id, wazidev_actuator_id)
-#    wazicloud_response = get_request(wazicloud_request_url, no_data)
-#    if (wazicloud_response != 'Error'):
-#        wazicloud_request_url = '%s/devices/%s/actuators/%s/value' % (wazicloud_url, wazigate_device_id, wazidev_actuator_id)
-#        wazicloud_response = put_request(wazicloud_request_url, wazidev_actuator_value)
-#        if (wazicloud_response != 'Error'):
-#            print("Step 6: Requests Check WaziCloud for the presence of the new actuator and set a value for it completed successfully.")
-#        else:
-#            print("Step 6: Request Check WaziCloud and set a value for the new actuator returned an error.")
-#    else:
-#        print("Step 6: Request Check WaziCloud for the presence of the new actuator returned an error.")
-#
-#    sleep(5)  # Wait for the actuator value to sync with WaziGate
-#
-#    ## Downlink path tests
-#
-#    # Step 7: Check WaziGate for the presence of the actuator value
-#    wazigate_request_url = '%s/devices/%s/actuators/%s/value' % (wazigate_url, wazigate_device_id, wazidev_actuator_id)
-#    wazigate_response = get_request(wazigate_request_url, no_data)
-#    if (wazigate_response != 'Error'):
-#        if (wazigate_response == wazidev_actuator_value):
-#            print("Step 7: Request Check WaziGate for the presence of the actuator value completed successfully.")
-#        else:
-#            print("Step 7: Request Check WaziGate for the presence of the actuator value returned a value mismatch.")
-#    else:
-#        print("Step 7: Request heck WaziGate for the presence of the actuator value returned an error.")
-#
-#    # Step 8: Check WaziDev for the presence of the actuator value
-#    print("Step 8: Check WaziDev for the presence of the actuator value")
-#    print("In the 'Serial Monitor' window a 'Payload: true' must be displayed for this step to complete successfully.")
-#    input("Press Enter when done to end integration tests...")
-#    print("Step 8: 'Check WaziDev for the presence of the actuator value' completed successfully.")
-#
-#    print("Integration tests completed successfully.")
-#
-#
