@@ -55,7 +55,7 @@ import random
 import logging
 import serial
 import time
-from os import environ
+import os
 
 wazidev_port = server = os.getenv('WAZIDEV_PORT', '/dev/ttyUSB0')
 wazidev_speed = 38400
