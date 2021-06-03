@@ -19,6 +19,13 @@ pipeline {
                 }
             }
         }
+        stage('Test') {
+           steps {
+              dir('IntegrationTests'){
+                 sh 'python3 -m unittest -v integration-tests'
+              }
+          }
+        }
     }
     post {
         always {
