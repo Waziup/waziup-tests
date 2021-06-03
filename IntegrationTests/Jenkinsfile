@@ -1,51 +1,53 @@
 pipeline {
-    agent any
-    environment {
-        ARDUINO_DIRECTORIES_USER = '/home/cdupont/Documents/Waziup/WaziDev/'
-        WAZIDEV_PORT = '/dev/ttyUSB0'
+  agent any
+  environment {
+    ARDUINO_DIRECTORIES_USER = '/home/cdupont/Documents/Waziup/WaziDev/'
+    WAZIDEV_PORT = '/dev/ttyUSB0'
+  }
+  stages {
+    stage('Prepare') {
+      steps {
+      sh 'pip3 install unittest-xml-reporting'
+      }
     }
-    stages {
-        stage('Prepare') {
-          sh 'pip3 install unittest-xml-reporting'
-        }
-        stage('Flash WaziDev') {
-            steps {
-                dir('WaziDev'){
-                    git url: 'https://github.com/Waziup/WaziDev.git'
-                    withEnv(["PATH=$PATH:/home/linuxbrew/.linuxbrew/bin/"]) {
-                        dir("tests/LoRaWAN-test/") {
-                          sh 'ls'
-                          sh 'arduino-cli compile -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
-                          sh 'sudo /home/linuxbrew/.linuxbrew/bin/arduino-cli upload -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
-                        }
-                    }
-                }
+    stage('Flash WaziDev') {
+      steps {
+        dir('WaziDev'){
+          git url: 'https://github.com/Waziup/WaziDev.git'
+          withEnv(["PATH=$PATH:/home/linuxbrew/.linuxbrew/bin/"]) {
+            dir("tests/LoRaWAN-test/") {
+              sh 'ls'
+              sh 'arduino-cli compile -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
+              sh 'sudo /home/linuxbrew/.linuxbrew/bin/arduino-cli upload -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
             }
+          }
         }
-        stage('Test') {
-           steps {
-              dir('IntegrationTests'){
-                 sh 'python3 -m unittest -v integration-tests'
-              }
-           }
-        }
+      }
     }
-    post {
-        always {
-            echo 'This will always run'
+    stage('Test') {
+      steps {
+        dir('IntegrationTests'){
+          sh 'python3 -m unittest -v integration-tests'
         }
-        success {
-            echo 'This will run only if successful'
-        }
-        failure {
-            echo 'This will run only if failed'
-        }
-        unstable {
-            echo 'This will run only if the run was marked as unstable'
-        }
-        changed {
-            echo 'This will run only if the state of the Pipeline has changed'
-            echo 'For example, if the Pipeline was previously failing but is now successful'
-        }
+      }
     }
+  }
+  post {
+      always {
+          echo 'This will always run'
+      }
+      success {
+          echo 'This will run only if successful'
+      }
+      failure {
+          echo 'This will run only if failed'
+      }
+      unstable {
+          echo 'This will run only if the run was marked as unstable'
+      }
+      changed {
+          echo 'This will run only if the state of the Pipeline has changed'
+          echo 'For example, if the Pipeline was previously failing but is now successful'
+      }
+  }
 }
