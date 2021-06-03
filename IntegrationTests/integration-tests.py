@@ -54,8 +54,10 @@ import xmlrunner
 import random
 import logging
 import serial
+import time
+from os import environ
 
-wazidev_port = "/dev/ttyUSB1"
+wazidev_port = server = os.getenv('WAZIDEV_PORT', '/dev/ttyUSB0')
 wazidev_speed = 38400
 
 wazidev_serial = serial.Serial(wazidev_port, wazidev_speed)
@@ -68,7 +70,7 @@ wazidev_serial.flushInput()
 #    import httplib as http_client
 ##http_client.HTTPConnection.debuglevel = 1
 #
-## You must initialize logging, otherwise you'll not see debug output.
+# You must initialize logging, otherwise you'll not see debug output.
 #logging.basicConfig()
 #logging.getLogger().setLevel(logging.DEBUG)
 #requests_log = logging.getLogger("requests.packages.urllib3")
@@ -88,11 +90,12 @@ wazigate_device = {
   'id': 'test000',
   'name': 'test',
   'meta': {
+    'codec': 'application/x-xlpp',
     'lorawan': {
-      'appSKey': '23158D3BBC31E6AF670D195B5AED5544',
+      'appSKey': '23158D3BBC31E6AF670D195B5AED5525',
       'devAddr': '26011D22',
       'devEUI': 'AA555A0026011D01',
-      'nwkSEncKey': '23158D3BBC31E6AF670D195B5AED5544',
+      'nwkSEncKey': '23158D3BBC31E6AF670D195B5AED5525',
       'profile': 'WaziDev'
     }
   },
@@ -121,18 +124,26 @@ class TestDeviceSync(unittest.TestCase):
         # Get WaziGate token
         resp = requests.post(wazigate_url + '/auth/token', json = auth) 
         self.token = {"Token": resp.text.strip('"')}
+        # Delete test device if exists
+        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
 
-    # Test simple device creation on the gateway
-    def test_device_creation(self):
+    # Test simple device creation and deletion on the gateway
+    def test_device_wazigate(self):
         # Create a new LoRaWAN device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
-        self.dev_id = resp.text
-        print(resp.text)
         self.assertEqual(resp.status_code, 200)
         
         # Check that it's effectively created
         resp = requests.get(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
         self.assertEqual(resp.status_code, 200)
+
+        # Delete it 
+        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        self.assertEqual(resp.status_code, 200)
+        
+        # Check that it's effectively deleted
+        resp = requests.get(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        self.assertEqual(resp.status_code, 404)
 
     # Test device upload to Cloud
     def test_device_creation_upload(self):
@@ -154,31 +165,27 @@ class TestDeviceSync(unittest.TestCase):
         self.dev_id = resp.text
         self.assertEqual(resp.status_code, 200)
 
-        # Write the Dev Addr to the WaziDev for configuration
-        wazidev_serial.write(wazigate_device["meta"]["lorawan"]["devAddr"])
-        # Write a temperature value
-        wazidev_serial.write("62")
-        
+        msg = wazidev_serial.readline()
+        print (msg.decode())
+        msg = wazidev_serial.readline()
+        print (msg.decode())
+        wazidev_serial.write("62\n".encode())
+        #print ("done")
+        while ("OK" not in msg.decode('unicode_escape')):
+          msg = wazidev_serial.readline()
+          print (msg.decode('unicode_escape'), end='', flush=True)
+
+        time.sleep(2)
         # Check that it's effectively created
-        resp = requests.get(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        resp = requests.get(wazigate_url + '/devices/' + self.dev_id + "/sensors/temperatureSensor_1/value", headers = self.token) #
         print(resp.text)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.text, "62")
   
     # Remove resources that was created
-    #def tearDown(self):
-    #    resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
-    #    print(resp.status_code)
-    #    self.assertEqual(resp.status_code, 200)
-    #    
-    #    resp = requests.get(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
-    #    print(resp.status_code)
-    #    self.assertEqual(resp.status_code, 404)
-
-    #    resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
-    #    self.assertEqual(resp.status_code, 204)
-
-    #    resp = requests.get(wazicloud_url + '/devices/' + self.dev_id)
-    #    self.assertEqual(resp.status_code, 404)
-
+    def tearDown(self):
+        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
 
 if __name__ == '__main__':
     with open('results.xml', 'wb') as output:
