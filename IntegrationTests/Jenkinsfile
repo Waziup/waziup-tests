@@ -11,7 +11,7 @@ pipeline {
     }
     stage('Flash WaziDev') {
       steps {
-        sh 'echo WaziDev port is $WAZIDEV_PORT'
+        echo 'WaziDev port is $WAZIDEV_PORT'
         dir('WaziDev'){
           git url: 'https://github.com/Waziup/WaziDev.git'
           withEnv(["PATH=$PATH:/home/linuxbrew/.linuxbrew/bin/"]) {
