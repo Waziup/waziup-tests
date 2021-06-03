@@ -24,7 +24,7 @@ pipeline {
               dir('IntegrationTests'){
                  sh 'python3 -m unittest -v integration-tests'
               }
-          }
+           }
         }
     }
     post {
