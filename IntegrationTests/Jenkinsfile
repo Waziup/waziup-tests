@@ -10,7 +10,7 @@ pipeline {
                 dir('WaziDev'){
                     git url: 'https://github.com/Waziup/WaziDev.git'
                     withEnv(["PATH=$PATH:/home/linuxbrew/.linuxbrew/bin/"]) {
-                        dir("WaziDev/tests/LoRaWAN-test/") {
+                        dir("tests/LoRaWAN-test/") {
                           sh 'ls'
                           sh 'arduino-cli compile -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
                           sh 'arduino-cli upload -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
