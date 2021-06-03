@@ -7,16 +7,14 @@ pipeline {
     stages {
         stage('Prepare') {
             steps {
-                git url: 'https://github.com/Waziup/WaziDev.git'
-                withEnv(["PATH=$PATH:/home/linuxbrew/.linuxbrew/bin/"]) {
-                  //sh 'brew update'
-                  //sh 'brew install arduino-cli'
-                  sh 'ls'
-                  dir("WaziDev/tests/LoRaWAN-test/") {
-                    sh 'ls'
-                    sh 'arduino-cli compile -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
-                    sh 'arduino-cli upload -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
-                  }
+                dir('WaziDev'){
+                    git url: 'https://github.com/Waziup/WaziDev.git'
+                    withEnv(["PATH=$PATH:/home/linuxbrew/.linuxbrew/bin/"]) {
+                    dir("WaziDev/tests/LoRaWAN-test/") {
+                      sh 'ls'
+                      sh 'arduino-cli compile -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
+                      sh 'arduino-cli upload -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
+                    }
                 }
             }
         }
