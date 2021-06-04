@@ -101,7 +101,7 @@ class TestWaziGateBasic(unittest.TestCase):
         resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
 
     def test_create_device_wazigate(self):
-        """ Test simple device creation on the gateway"""
+        """ Test device creation on the gateway"""
 
         # Create a new LoRaWAN device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
@@ -111,8 +111,8 @@ class TestWaziGateBasic(unittest.TestCase):
         resp = requests.get(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
         self.assertEqual(resp.status_code, 200)
     
-    def test_create_device_wazigate(self):
-        """ Test simple device deletion on the gateway"""
+    def test_delete_device_wazigate(self):
+        """ Test device deletion on the gateway"""
 
         # Create a new LoRaWAN device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
@@ -140,27 +140,9 @@ class TestUplink(unittest.TestCase):
         # Delete test device if exists
         resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
 
-    def test_device_wazigate(self):
-        """ Test simple device creation and deletion on the gateway"""
-
-        # Create a new LoRaWAN device on WaziGate
-        resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
-        self.assertEqual(resp.status_code, 200)
-        
-        # Check that it's effectively created
-        resp = requests.get(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
-        self.assertEqual(resp.status_code, 200)
-
-        # Delete it 
-        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
-        self.assertEqual(resp.status_code, 200)
-        
-        # Check that it's effectively deleted
-        resp = requests.get(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
-        self.assertEqual(resp.status_code, 404)
-
     # Test device upload to Cloud
     def test_device_creation_upload(self):
+        """ Test device sync from gateway to Cloud"""
 
         # Create a new LoRaWAN device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
@@ -173,23 +155,17 @@ class TestUplink(unittest.TestCase):
 
     # Test value sent from WaziDev
     def test_wazidev_value_upload(self):
+        """ Test value upload from WaziDev to gateway"""
 
         # Create a new LoRaWAN device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
         self.dev_id = resp.text
         self.assertEqual(resp.status_code, 200)
 
-        msg = wazidev_serial.readline()
-        print (msg.decode())
-        msg = wazidev_serial.readline()
-        print (msg.decode())
-        wazidev_serial.write("62\n".encode())
-        #print ("done")
-        while ("OK" not in msg.decode('unicode_escape')):
-          msg = wazidev_serial.readline()
-          print (msg.decode('unicode_escape'), end='', flush=True)
+        # Send a value with WaziDev
+        sendValueWaziDev("62\n")
+        time.sleep(3)
 
-        time.sleep(2)
         # Check that it's effectively created
         resp = requests.get(wazigate_url + '/devices/' + self.dev_id + "/sensors/temperatureSensor_1/value", headers = self.token) #
         print(resp.text)
@@ -201,13 +177,26 @@ class TestUplink(unittest.TestCase):
         resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
         resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
 
-#suite = unittest.TestSuite()
-#suite.addTest(TestDeviceSync('Uplink tests'))
+def sendValueWaziDev(val):
+    msg = wazidev_serial.readline()
+    #Await prompt
+    while ("Enter" not in msg.decode('unicode_escape')):
+        msg = wazidev_serial.readline()
+        print (msg.decode('unicode_escape'), end='', flush=True)
+
+    # send value
+    wazidev_serial.write(val.encode())
+   
+    # Await LoRaWAN OK
+    while ("OK" not in msg.decode('unicode_escape')):
+        msg = wazidev_serial.readline()
+        print (msg.decode('unicode_escape'), end='', flush=True)
+
+
 
 if __name__ == '__main__':
     with open('results.xml', 'wb') as output:
-        unittest.main(verbosity=2,
-                      testRunner=xmlrunner.XMLTestRunner(output=output, verbosity=2),
+        unittest.main(testRunner=xmlrunner.XMLTestRunner(output=output, verbosity=2),
                       failfast=False, 
                       buffer=False, 
                       catchbreak=False)
