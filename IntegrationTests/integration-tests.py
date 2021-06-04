@@ -17,35 +17,6 @@
 ##   https://dashboard.waziup.io
 
 
-## Uplink path tests: WaziDev -> WaziGate -> WaziCloud
-##
-## Steps:
-##     1. Power on WaziDev device flashed with the 'LoRaWAN/Actuation' sketch
-##     2. Create a new LoRaWAN device on WaziGate
-##     3. Check WaziGate for the presence of the new sensor and its value
-## Expected result:
-##     The new sensor and its value should be present on WaziGate (sensor is automatically created on WaziGate).
-##
-## Steps:
-##     4. Check WaziCloud for the presence of the new LoRaWAN device, sensor and its value
-## Expected result:
-##     The new LoRaWAN device, sensor and its value should be present on WaziCloud (device and sensor are automatically synchronized with WaziCloud).
-##
-## Steps:
-##     5. Create a new actuator on WaziGate
-##     6. Check WaziCloud for the presence of the new actuator and set a value for it
-## Expected result:
-##     The new actuator should be present on WaziCloud and a value could be set for it (actuator is automatically synchronized with WaziCloud).
-
-## Downlink path tests: WaziCloud -> WaziGate -> WaziDev
-##
-## Steps:
-##     7. Check WaziGate for the presence of the actuator value
-##     8. Check WaziDev for the presence of the actuator value
-## Expected result:
-##     The actuator value should be present on WaziGate and on WaziDev.
-
-
 import json
 import requests
 from time import sleep
