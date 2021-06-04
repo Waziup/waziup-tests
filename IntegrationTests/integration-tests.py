@@ -2,7 +2,7 @@
 ##
 ## The goal of integration testing is to test the full chain:
 ## WaziDev <-> WaziGate <-> WaziCloud
-## both ways (uplink and downlink paths) using component REST API.
+## both ways (uplink and downlink paths) using components REST API.
 
 ## Tests implemented comprise the following:
 ## - device synchronization
@@ -27,6 +27,7 @@ import logging
 import serial
 import time
 import os
+import sys
 from xmlrunner import XMLTestRunner
 
 wazidev_port = server = os.getenv("WAZIDEV_PORT", '/dev/ttyUSB0')
@@ -88,10 +89,10 @@ auth = {
 
 wazicloud_url = 'https://api.waziup.io/api/v2'
 
-class TestDeviceSync(unittest.TestCase):
+class TestWaziGateBasic(unittest.TestCase):
 
-    token = ""
-    dev_id = "test000"
+    token = None
+    dev_id = wazigate_device['id']
     def setUp(self):
         # Get WaziGate token
         resp = requests.post(wazigate_url + '/auth/token', json = auth) 
@@ -99,8 +100,49 @@ class TestDeviceSync(unittest.TestCase):
         # Delete test device if exists
         resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
 
-    # Test simple device creation and deletion on the gateway
+    def test_create_device_wazigate(self):
+        """ Test simple device creation on the gateway"""
+
+        # Create a new LoRaWAN device on WaziGate
+        resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
+        self.assertEqual(resp.status_code, 200)
+        
+        # Check that it's effectively created
+        resp = requests.get(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        self.assertEqual(resp.status_code, 200)
+    
+    def test_create_device_wazigate(self):
+        """ Test simple device deletion on the gateway"""
+
+        # Create a new LoRaWAN device on WaziGate
+        resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
+        
+        # Delete it 
+        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        self.assertEqual(resp.status_code, 200)
+        
+        # Check that it's effectively deleted
+        resp = requests.get(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        self.assertEqual(resp.status_code, 404)
+    
+    # Remove any resources that was created
+    def tearDown(self):
+        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+
+class TestUplink(unittest.TestCase):
+
+    token = None
+    dev_id = wazigate_device['id']
+    def setUp(self):
+        # Get WaziGate token
+        resp = requests.post(wazigate_url + '/auth/token', json = auth) 
+        self.token = {"Token": resp.text.strip('"')}
+        # Delete test device if exists
+        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+
     def test_device_wazigate(self):
+        """ Test simple device creation and deletion on the gateway"""
+
         # Create a new LoRaWAN device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
         self.assertEqual(resp.status_code, 200)
@@ -164,7 +206,9 @@ class TestDeviceSync(unittest.TestCase):
 
 if __name__ == '__main__':
     with open('results.xml', 'wb') as output:
-        unittest.main(
-            testRunner=xmlrunner.XMLTestRunner(output=output),
-            failfast=False, buffer=False, catchbreak=False)
+        unittest.main(verbosity=2,
+                      testRunner=xmlrunner.XMLTestRunner(output=output),
+                      failfast=False, 
+                      buffer=False, 
+                      catchbreak=False)
 
