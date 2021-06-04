@@ -29,7 +29,7 @@ pipeline {
     stage('Test') {
       steps {
         dir('IntegrationTests'){
-          sh 'sudo -E python3 -m unittest -v integration-tests'
+          sh 'sudo -E python3 integration-tests'
         }
       }
     }
