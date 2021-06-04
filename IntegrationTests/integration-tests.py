@@ -207,7 +207,7 @@ class TestUplink(unittest.TestCase):
 if __name__ == '__main__':
     with open('results.xml', 'wb') as output:
         unittest.main(verbosity=2,
-                      testRunner=xmlrunner.XMLTestRunner(output=output),
+                      testRunner=xmlrunner.XMLTestRunner(output=output, verbosity=2),
                       failfast=False, 
                       buffer=False, 
                       catchbreak=False)
