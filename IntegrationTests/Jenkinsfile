@@ -20,7 +20,7 @@ pipeline {
             dir("tests/LoRaWAN-test/") {
               sh 'ls'
               sh 'arduino-cli compile -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
-              sh 'sudo -E arduino-cli upload -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
+              sh 'sudo -E /home/linuxbrew/.linuxbrew/bin/arduino-cli upload -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
             }
           }
         }
