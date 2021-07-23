@@ -15,10 +15,13 @@ apt install -y nfs-kernel-server dnsmasq kpartx unzip
 Preparing the RPI
 -----------------
 
-We need to configure the RPI so it will search a netboot server.
+We need to configure the RPI so it will search for a netboot server on the network.
 If this fails, it will then try to boot from the SD card.
+For this, you need to boot your RPI from an SD card with any Raspian OS (this is the last time we'll need an SD card :).
+Launch `raspi-config` and select `boot-options`.
+Select boot from network and then boot form SD card.
 
-For configuring our netboot server, we need the RPI serial number:
+For configuring our netboot server, we need also need the RPI serial number:
 ```
 $ cat /proc/cpuinfo | grep Serial | awk -F ': ' '{print $2}' | tail -c 8
 036cb716
@@ -30,8 +33,8 @@ Alternatively, you can extract the number from the RPI boot screen:
 Mouting the ISO image
 ---------------------
 
-On the server, the first thing to do is to mount localy the ISO image.
-First, download an unzip an RPI ISO image.
+On the server, the first thing to do is to mount localy the ISO image so we can access the files inside it.
+First, download and unzip an RPI ISO image.
 Then use kpartx to map the partitions inside the ISO:
 
 ```
@@ -54,13 +57,13 @@ $ mount /dev/mapper/loop11p2 MyISO
 $ mount /dev/mapper/loop11p1 MyISO/boot
 ```
 
-We have now mounted locally both the "root" partition and the "boot" partition of the ISO file.
+We have now mounted locally both the "root" partition and the "boot" partition of the ISO in the folder `/mnt/MyISO`.
 
 Preparing the Netboot Server
 ----------------------------
 
 For booting from the network, a netboot server is necessary.
-Upon starting, the RPI will broadcast a DHCP request for remote boot on the local network.
+Upon starting, the RPI will broadcast a DHCP request on the local network, asking for a netboot server.
 The DHCP server should reply with the address of a TFTP server.
 This TFTP server will then be able to deliver all the files that the RPI needs to boot up.
 
