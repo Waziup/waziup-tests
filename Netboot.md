@@ -64,7 +64,7 @@ Preparing the Netboot Server
 
 For booting from the network, a netboot server is necessary.
 Upon starting, the RPI will broadcast a DHCP request on the local network, asking for a netboot server.
-The DHCP server should reply with the address of a TFTP server.
+The DHCP server should reply with the address of a TFTP ("Trivial File Transfer Protocol") server.
 This TFTP server will then be able to deliver all the files that the RPI needs to boot up.
 
 The Linux tool "dnsmask" can be used for both DHCP and TFTP.
@@ -122,3 +122,19 @@ Your RPI should now be able to mount the root folder from NFS.
 
 That's it!
 You can now switch on your RPI without SD card and see if it boots.
+
+
+Additional notes
+----------------
+
+*Docker*
+Docker doesn't work very well over NFS.
+You need to change the stogare driver from `overlay` to `VFS`.
+Add in this file `/etc/docker/daemon.json`:
+```
+{
+  "storage-driver": "vfs"
+}
+```
+
+
