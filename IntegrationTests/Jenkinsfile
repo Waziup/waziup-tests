@@ -1,7 +1,7 @@
 pipeline {
   agent any
   environment {
-    ARDUINO_DIRECTORIES_USER = '/home/cdupont/Documents/Waziup/WaziDev/'
+    ARDUINO_DIRECTORIES_USER = "${env.WORKSPACE}/WaziDev"
   }
   stages {
     stage('Prepare') {
@@ -16,12 +16,10 @@ pipeline {
         sh "sudo -E echo $PATH"
         dir('WaziDev'){
           git url: 'https://github.com/Waziup/WaziDev.git'
-          withEnv(["PATH=$PATH:/home/linuxbrew/.linuxbrew/bin/"]) {
-            dir("tests/LoRaWAN-test/") {
-              sh 'ls'
-              sh 'arduino-cli compile -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
-              sh 'sudo -E /home/linuxbrew/.linuxbrew/bin/arduino-cli upload -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
-            }
+          dir("tests/LoRaWAN-test/") {
+            sh 'ls'
+            sh 'arduino-cli compile -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
+            sh 'sudo arduino-cli upload -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
           }
         }
       }

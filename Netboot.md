@@ -127,7 +127,6 @@ You can now switch on your RPI without SD card and see if it boots.
 Additional notes
 ----------------
 
-*Docker*
 Docker doesn't work very well over NFS.
 You need to change the stogare driver from `overlay` to `VFS`.
 Add in this file `/etc/docker/daemon.json`:
