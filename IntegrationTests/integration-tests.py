@@ -96,7 +96,8 @@ class TestWaziGateBasic(unittest.TestCase):
     def setUp(self):
         # Get WaziGate token
         resp = requests.post(wazigate_url + '/auth/token', json = auth) 
-        self.token = {"Token": resp.text.strip('"')}
+        self.token = {"Authorization": "Bearer " + resp.text.strip('"')}
+
         # Delete test device if exists
         resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
 
