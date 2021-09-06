@@ -63,18 +63,18 @@ wazigate_url = 'http://172.16.11.186/'
 wazigate_device = {
   'id': 'test000',
   'name': 'test',
-  'meta': {
-    'codec': 'application/x-xlpp',
-    'lorawan': {
-      'appSKey': '23158D3BBC31E6AF670D195B5AED5525',
-      'devAddr': '26011D22',
-      'devEUI': 'AA555A0026011D01',
-      'nwkSEncKey': '23158D3BBC31E6AF670D195B5AED5525',
-      'profile': 'WaziDev'
-    }
-  },
   'sensors': [],
   'actuators': []
+}
+
+meta = {
+    "lorawan": {
+      "appSKey": "23158D3BBC31E6AF670D195B5AED5525",
+      "devAddr": "26011D23",
+      "devEUI": "AA555A0026011D01",
+      "nwkSEncKey": "23158D3BBC31E6AF670D195B5AED5525",
+      "profile": "WaziDev"
+    }
 }
 
 wazigate_create_actuator = {
@@ -163,6 +163,9 @@ class TestUplink(unittest.TestCase):
         self.dev_id = resp.text
         self.assertEqual(resp.status_code, 200)
 
+        resp = requests.post(wazigate_url + '/devices/' + self.dev_id + "/meta", json = meta, headers = self.token)
+        self.assertEqual(resp.status_code, 200)
+        
         # Send a value with WaziDev
         sendValueWaziDev("62\n")
         time.sleep(3)
