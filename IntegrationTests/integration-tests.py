@@ -70,7 +70,7 @@ wazigate_device = {
 meta = {
     "lorawan": {
       "appSKey": "23158D3BBC31E6AF670D195B5AED5525",
-      "devAddr": "26011D23",
+      "devAddr": "26011D22",
       "devEUI": "AA555A0026011D01",
       "nwkSEncKey": "23158D3BBC31E6AF670D195B5AED5525",
       "profile": "WaziDev"
