@@ -172,10 +172,9 @@ class TestUplink(unittest.TestCase):
         time.sleep(3)
 
         # Check that it's effectively created
-        resp = requests.get(wazigate_url + '/devices/' + self.dev_id + "/sensors/temperatureSensor_1/value", headers = self.token) #
-        print(resp.text)
+        resp = requests.get(wazigate_url + '/devices/' + self.dev_id + "/sensors", headers = self.token) #
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.text, "62")
+        self.assertEqual(resp.json()[0]['value'], 62)
   
     # Remove resources that was created
     def tearDown(self):
