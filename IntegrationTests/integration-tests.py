@@ -169,7 +169,7 @@ class TestUplink(unittest.TestCase):
         
         # Send a value with WaziDev
         sendValueWaziDev("62\n")
-        time.sleep(3)
+        time.sleep(12)
 
         # Check that it's effectively created
         resp = requests.get(wazigate_url + '/devices/' + self.dev_id + "/sensors", headers = self.token) #
