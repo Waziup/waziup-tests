@@ -2,7 +2,7 @@ unzip -o deploy/image_$1.zip
 
 DEV=`losetup -f`
 
-losetup -P $DEV $1.zip
+losetup -P $DEV deploy/$1.img
 
 mount ${DEV}p2 /mnt/WaziGate_nightly
 mount ${DEV}p1 /mnt/WaziGate_nightly/boot
