@@ -15,7 +15,7 @@ pipeline {
     }
     stage('Run') {
       steps {
-        sh 'ssh pi@$WAZIGATE_URL "echo loragateway | sudo shutdown -r now"'
+        sh 'sshpass -p loragateway ssh pi@$WAZIGATE_URL "sudo reboot now"'
       }
     }
   }
