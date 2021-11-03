@@ -1,4 +1,4 @@
-unzip -o image_$1.zip
+unzip -o deploy/image_$1.zip
 
 DEV=`losetup -f`
 
