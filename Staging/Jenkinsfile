@@ -7,9 +7,9 @@ pipeline {
     stage('Prepare') {
       steps {
         dir("Staging") {
-          copyArtifacts projectName: 'compiling/WaziGate_ISO', selector: specific('50')
+          copyArtifacts projectName: 'compiling/WaziGate_ISO'
           sh 'ls'
-          sh 'sudo ./mount_ISO.sh 2021-11-02-WaziGate'
+          sh 'sudo ./mount_ISO.sh nightly-WaziGate'
         }
       }
     }
