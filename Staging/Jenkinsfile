@@ -15,7 +15,7 @@ pipeline {
     }
     stage('Run') {
       steps {
-        sh "sshpass -p loragateway ssh pi@$WAZIGATE_IP \'sudo reboot now\'"
+        sh "sudo sshpass -p loragateway ssh pi@$WAZIGATE_IP \\'sudo reboot now\\'"
       }
     }
   }
