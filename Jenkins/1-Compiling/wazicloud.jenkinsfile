@@ -6,7 +6,12 @@ pipeline {
   stages {
     stage('Prepare') {
       steps {
-        sh 'sudo chmod 777 data/* -R'
+        checkout([$class: 'GitSCM',
+                  branches: [[name: '*/master']],
+                  doGenerateSubmoduleConfigurations: false,
+                  extensions: [[$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: false, recursiveSubmodules: true, reference: '', trackingSubmodules: false]],
+                  submoduleCfg: [],
+                  userRemoteConfigs: [[url: 'https://github.com/Waziup/WaziCloud.git']]])
       }
     }
     stage('Build') {
