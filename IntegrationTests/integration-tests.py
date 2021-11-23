@@ -30,12 +30,12 @@ import os
 import sys
 from xmlrunner import XMLTestRunner
 
-wazidev_port = server = os.getenv("WAZIDEV_PORT", '/dev/ttyUSB0')
-print ("WaziDev port:" + wazidev_port)
-wazidev_speed = 38400
-
-wazidev_serial = serial.Serial(wazidev_port, wazidev_speed)
-wazidev_serial.flushInput()
+#wazidev_port = server = os.getenv("WAZIDEV_PORT", '/dev/ttyUSB0')
+#print ("WaziDev port:" + wazidev_port)
+#wazidev_speed = 38400
+#
+#wazidev_serial = serial.Serial(wazidev_port, wazidev_speed)
+#wazidev_serial.flushInput()
 
 #try:
 #    import http.client as http_client
@@ -140,7 +140,7 @@ class TestUplink(unittest.TestCase):
         resp = requests.post(wazigate_url + '/auth/token', json = auth) 
         self.token = {"Authorization": "Bearer " + resp.text.strip('"')}
         # Delete test device if exists
-        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        #resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
 
     # Test device upload to Cloud
     def test_device_creation_upload(self):
@@ -172,14 +172,15 @@ class TestUplink(unittest.TestCase):
         time.sleep(12)
 
         # Check that it's effectively created
-        resp = requests.get(wazigate_url + '/devices/' + self.dev_id + "/sensors", headers = self.token) #
+        resp = requests.get(wazigate_url + '/devices/' + self.dev_id + "/sensors", headers = self.token)
+        print(resp.json())
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json()[0]['value'], 62)
   
     # Remove resources that was created
-    def tearDown(self):
-        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
-        resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
+    #def tearDown(self):
+    #    resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+    #    resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
 
 def sendValueWaziDev(val):
     msg = wazidev_serial.readline()
