@@ -1,19 +1,22 @@
+// This Jenkinsfile will build the docker images for all WaziGatei components.
+// After that, it will restart them on a test WaziGate RPI and test them.
+
 pipeline {
   agent any
   environment {
     WAZIGATE_TAG = 'nightly'
-    //DOCKER_CREDS = credentials('dockerhub')
   }
   stages {
     stage('Prepare') {
       steps {
+        sh 'pip3 install unittest-xml-reporting'
+        
         sh 'docker run --rm --privileged multiarch/qemu-user-static --reset -p yes'
         catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
             sh 'docker buildx create --name rpibuilder --platform linux/arm/v7; true'
         }
         sh 'docker buildx use rpibuilder'
         sh 'docker buildx inspect --bootstrap'
-        //sh 'docker login -u $DOCKER_CREDS_USR -p $DOCKER_CREDS_PSW'
       }
     }
     stage('Build') {
@@ -31,6 +34,24 @@ pipeline {
           sh 'docker buildx build --platform=linux/arm/v7 --tag waziup/wazigate-lora:$WAZIGATE_TAG --push --progress plain .'
         }
       }
+    }
+    stage('Stage') {
+      steps {
+        sh 'echo "restart containers on RPI"'
+        sh "sudo sshpass -p loragateway ssh pi@$WAZIGATE_IP \\'sudo WAZIGATE_TAG=nightly /var/lib/wazigate/setup.sh\\'"
+      }
+    }
+    stage('Test') {
+      steps {
+        dir('tests'){
+          sh 'sudo -E python3 tests.py'
+        }
+      }
+    }
+  }
+  post {
+    always {
+      junit 'tests/results.xml'
     }
   }
 }
