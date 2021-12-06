@@ -58,7 +58,8 @@ wazidev_sensor_value = 45.7
 wazidev_actuator_id = 'act1'
 wazidev_actuator_value = json.dumps(True)
 
-wazigate_url = 'http://172.16.11.186/'
+wazigate_ip = os.environ.get('WAZIGATE_IP', '172.16.11.186')
+wazigate_url = 'http://' + wazigate_ip + '/'
 
 wazigate_device = {
   'id': 'test000',
@@ -88,7 +89,7 @@ auth = {
   "password": "loragateway"
 }
 
-wazicloud_url = 'https://api.waziup.io/api/v2'
+wazicloud_url = 'http://localhost:800/api/v2'
 
 class TestWaziGateBasic(unittest.TestCase):
 
