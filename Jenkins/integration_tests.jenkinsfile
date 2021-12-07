@@ -26,8 +26,10 @@ pipeline {
     }
     stage('Test') {
       steps {
-        dir('IntegrationTests'){
-          sh 'sudo -E python3 integration-tests.py'
+        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+          dir('IntegrationTests'){
+            sh 'sudo -E python3 integration-tests.py'
+          }
         }
       }
     }
