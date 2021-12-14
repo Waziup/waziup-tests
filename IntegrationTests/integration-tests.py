@@ -7,7 +7,6 @@
 ## Tests implemented comprise the following:
 ## - device synchronization
 ## - sensor synchronization
-## - actuator synchronization
 
 ## Prerequisites:
 ##   https://www.waziup.io/documentation/wazigate/v2/lorawan/
@@ -60,6 +59,7 @@ wazidev_actuator_value = json.dumps(True)
 
 wazigate_ip = os.environ.get('WAZIGATE_IP', '172.16.11.186')
 wazigate_url = 'http://' + wazigate_ip + '/'
+wazicloud_url = os.getenv('WAZICLOUD_URL', 'http://localhost:800/api/v2')
 
 wazigate_device = {
   'id': 'test000',
@@ -89,9 +89,8 @@ auth = {
   "password": "loragateway"
 }
 
-wazicloud_url = 'http://localhost:800/api/v2'
 
-class TestWaziGateBasic(unittest.TestCase):
+class TestCloudSync(unittest.TestCase):
 
     token = None
     dev_id = wazigate_device['id']
@@ -99,38 +98,60 @@ class TestWaziGateBasic(unittest.TestCase):
         # Get WaziGate token
         resp = requests.post(wazigate_url + '/auth/token', json = auth) 
         self.token = {"Authorization": "Bearer " + resp.text.strip('"')}
-
         # Delete test device if exists
-        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        #resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
 
-    def test_create_device_wazigate(self):
-        """ Test device creation on the gateway"""
+    # Test device creation upload to Cloud
+    def test_device_upload(self):
+        """ Test device sync from gateway to Cloud"""
 
-        # Create a new LoRaWAN device on WaziGate
+        # Create a new device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
+        self.dev_id = resp.text
         self.assertEqual(resp.status_code, 200)
         
-        # Check that it's effectively created
-        resp = requests.get(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        # Check WaziCloud for the presence of the new device
+        resp = requests.get(wazicloud_url + '/devices/' + self.dev_id)
         self.assertEqual(resp.status_code, 200)
-    
-    def test_delete_device_wazigate(self):
-        """ Test device deletion on the gateway"""
 
-        # Create a new LoRaWAN device on WaziGate
+    # Test sensor creation upload to Cloud
+    def test_sensor_upload(self):
+        """ Test sensor sync from gateway to Cloud"""
+
+        # Create a new device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
-        
-        # Delete it 
-        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        self.dev_id = resp.text
         self.assertEqual(resp.status_code, 200)
         
-        # Check that it's effectively deleted
-        resp = requests.get(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
-        self.assertEqual(resp.status_code, 404)
-    
-    # Remove any resources that was created
+        resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/sensors', json={'name':'test'}, headers = self.token)
+        self.assertEqual(resp.status_code, 200)
+        
+        # Check WaziCloud for the presence of the new sensor
+        resp = requests.get(wazicloud_url + '/devices/' + self.dev_id + '/sensors/test')
+        self.assertEqual(resp.status_code, 200)
+
+    # Test sensor creation upload to Cloud
+    def test_actuator_upload(self):
+        """ Test actuator sync from gateway to Cloud"""
+
+        # Create a new device on WaziGate
+        resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
+        self.dev_id = resp.text
+        self.assertEqual(resp.status_code, 200)
+        
+        resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/actuators', json={'name':'test'}, headers = self.token)
+        self.assertEqual(resp.status_code, 200)
+        
+        # Check WaziCloud for the presence of the new actuator
+        resp = requests.get(wazicloud_url + '/devices/' + self.dev_id + '/actuators/test')
+        self.assertEqual(resp.status_code, 200)
+
+
+    # Remove resources that was created
     def tearDown(self):
         resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
+
 
 class TestUplink(unittest.TestCase):
 
@@ -143,28 +164,17 @@ class TestUplink(unittest.TestCase):
         # Delete test device if exists
         #resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
 
-    # Test device upload to Cloud
-    def test_device_creation_upload(self):
-        """ Test device sync from gateway to Cloud"""
-
-        # Create a new LoRaWAN device on WaziGate
-        resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
-        self.dev_id = resp.text
-        self.assertEqual(resp.status_code, 200)
-        
-        # Check WaziCloud for the presence of the new LoRaWAN device, sensor and its value
-        resp = requests.get(wazicloud_url + '/devices/' + self.dev_id)
-        self.assertEqual(resp.status_code, 200)
 
     # Test value sent from WaziDev
     def test_wazidev_value_upload(self):
         """ Test value upload from WaziDev to gateway"""
 
-        # Create a new LoRaWAN device on WaziGate
+        # Create a new device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
         self.dev_id = resp.text
         self.assertEqual(resp.status_code, 200)
 
+        # Add the LoRaWAN meta information
         resp = requests.post(wazigate_url + '/devices/' + self.dev_id + "/meta", json = meta, headers = self.token)
         self.assertEqual(resp.status_code, 200)
         
@@ -172,11 +182,60 @@ class TestUplink(unittest.TestCase):
         sendValueWaziDev("62\n")
         time.sleep(12)
 
-        # Check that it's effectively created
+        # Check that the value has been received in the Cloud
         resp = requests.get(wazigate_url + '/devices/' + self.dev_id + "/sensors", headers = self.token)
         print(resp.json())
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json()[0]['value'], 62)
+  
+    # Remove resources that was created
+    #def tearDown(self):
+    #    resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+    #    resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
+
+class TestDownlink(unittest.TestCase):
+
+    token = None
+    dev_id = wazigate_device['id']
+    def setUp(self):
+        # Get WaziGate token
+        resp = requests.post(wazigate_url + '/auth/token', json = auth) 
+        self.token = {"Authorization": "Bearer " + resp.text.strip('"')}
+        # Delete test device if exists
+        #resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+
+
+    # Test value sent from WaziDev
+    def test_wazidev_value_upload(self):
+        """ Test value upload from WaziDev to gateway"""
+
+        # Create a new device on WaziGate
+        resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
+        self.dev_id = resp.text
+        self.assertEqual(resp.status_code, 200)
+
+        # Add LoRaWAN meta information
+        resp = requests.post(wazigate_url + '/devices/' + self.dev_id + "/meta", json = meta, headers = self.token)
+        self.assertEqual(resp.status_code, 200)
+       
+        # Create the actuator
+        resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/actuators', json={'name':'test'}, headers = self.token)
+        self.assertEqual(resp.status_code, 200)
+
+        # Actuate on the Cloud 
+        resp = requests.post(wazicloud_url + '/devices/' + self.dev_id + '/actuators/test/value', json=10)
+        self.assertEqual(resp.status_code, 200)
+
+        # Check actuator value at gateway
+        resp = requests.get(wazigate_url + '/devices/' + self.dev_id + '/actuators/test', headers = self.token)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()[0]['value'], 10)
+        
+        time.sleep(1)
+        # Send a value with WaziDev to get the receive window
+        res = sendValueWaziDev("62\n")
+        self.assertEqual(res, 10)
+
   
     # Remove resources that was created
     #def tearDown(self):
@@ -198,7 +257,7 @@ def sendValueWaziDev(val):
         msg = wazidev_serial.readline()
         print (msg.decode('unicode_escape'), end='', flush=True)
 
-
+    return ...
 
 if __name__ == '__main__':
     with open('results.xml', 'wb') as output:
