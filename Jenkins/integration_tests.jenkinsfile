@@ -17,9 +17,9 @@ pipeline {
         dir('WaziDev'){
           git url: 'https://github.com/Waziup/WaziDev.git'
           dir("tests/LoRaWAN-test/") {
-            sh 'ls'
-            sh 'arduino-cli compile -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
-            sh 'sudo ARDUINO_DIRECTORIES_DATA=/var/lib/jenkins/.arduino15 arduino-cli upload -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
+            sh 'arduino-cli lib install simpleRPC'
+            sh 'arduino-cli compile --fqbn arduino:avr:pro:cpu=8MHzatmega328 --libraries ../../libraries'
+            sh 'sudo arduino-cli upload -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
           }
         }
       }
