@@ -39,12 +39,12 @@ wazidev_sensor_value = 45.7
 wazidev_actuator_id = 'act1'
 wazidev_actuator_value = json.dumps(True)
 
-wazigate_ip = os.environ.get('WAZIGATE_IP', '172.16.11.186')
-wazigate_url = 'http://' + wazigate_ip + '/'
+wazigate_ip = os.environ.get('WAZIGATE_IP', '172.16.11.212')
+wazigate_url = 'http://' + wazigate_ip
 wazicloud_url = os.getenv('WAZICLOUD_URL', 'http://localhost:800/api/v2')
 
 wazigate_device = {
-  'id': 'test000',
+  'id': 'testDev',
   'name': 'test',
   'sensors': [],
   'actuators': []
@@ -61,16 +61,19 @@ meta = {
   }
 }
 
-wazigate_create_actuator = {
-  'id': 'act1',
-  'name': 'act1'
-}
-
 auth = {
   "username": "admin",
   "password": "loragateway"
 }
 
+def_cloud = {
+  "rest": "//api.waziup.io/api/v2",
+  "mqtt": "",
+  "credentials": {
+      "username": "my username",
+      "token": "my password"
+  }
+}
 
 class TestCloudSync(unittest.TestCase):
 
@@ -82,6 +85,10 @@ class TestCloudSync(unittest.TestCase):
         self.token = {"Authorization": "Bearer " + resp.text.strip('"')}
         # Delete test device if exists
         #resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        
+        # create Cloud sync
+        #resp = requests.post(wazigate_url + '/clouds', json=def_cloud, headers = self.token)
+        #self.assertEqual(resp.status_code, 200)
 
     # Test device creation upload to Cloud
     def test_device_upload(self):
@@ -105,11 +112,11 @@ class TestCloudSync(unittest.TestCase):
         self.dev_id = resp.text
         self.assertEqual(resp.status_code, 200)
         
-        resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/sensors', json={'name':'test'}, headers = self.token)
+        resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/sensors', json={'id':'testSen', 'name':'testSen'}, headers = self.token)
         self.assertEqual(resp.status_code, 200)
         
         # Check WaziCloud for the presence of the new sensor
-        resp = requests.get(wazicloud_url + '/devices/' + self.dev_id + '/sensors/test')
+        resp = requests.get(wazicloud_url + '/devices/' + self.dev_id + '/sensors/testSen')
         self.assertEqual(resp.status_code, 200)
 
     # Test sensor creation upload to Cloud
@@ -121,18 +128,21 @@ class TestCloudSync(unittest.TestCase):
         self.dev_id = resp.text
         self.assertEqual(resp.status_code, 200)
         
-        resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/actuators', json={'name':'test'}, headers = self.token)
+        resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/actuators', json = {'id':'testAct', 'name':'testSen'}, headers = self.token)
+        self.act_id = resp.text
         self.assertEqual(resp.status_code, 200)
+        print(self.dev_id)
+        print(self.act_id)
         
         # Check WaziCloud for the presence of the new actuator
-        resp = requests.get(wazicloud_url + '/devices/' + self.dev_id + '/actuators/test')
+        resp = requests.get(wazicloud_url + '/devices/testDev/actuators/testAct' + self.act_id)
         self.assertEqual(resp.status_code, 200)
 
 
     # Remove resources that was created
-    def tearDown(self):
-        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
-        resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
+   # def tearDown(self):
+        #resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        #resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
 
 
 class TestUplink(unittest.TestCase):
