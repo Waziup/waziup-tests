@@ -28,29 +28,11 @@ import time
 import os
 import sys
 from xmlrunner import XMLTestRunner
+from simple_rpc import Interface
 
-#wazidev_port = server = os.getenv("WAZIDEV_PORT", '/dev/ttyUSB0')
-#print ("WaziDev port:" + wazidev_port)
-#wazidev_speed = 38400
-#
-#wazidev_serial = serial.Serial(wazidev_port, wazidev_speed)
-#wazidev_serial.flushInput()
+wazidev_port = os.getenv("WAZIDEV_PORT", '/dev/ttyUSB0')
 
-#try:
-#    import http.client as http_client
-#except ImportError:
-#    # Python 2
-#    import httplib as http_client
-##http_client.HTTPConnection.debuglevel = 1
-#
-# You must initialize logging, otherwise you'll not see debug output.
-#logging.basicConfig()
-#logging.getLogger().setLevel(logging.DEBUG)
-#requests_log = logging.getLogger("requests.packages.urllib3")
-#requests_log.setLevel(logging.INFO)
-#requests_log.propagate = True
-
-## Variable declaration
+interface = Interface(wazidev_port)
 
 wazidev_sensor_id = 'temperatureSensor_1'
 wazidev_sensor_value = 45.7
@@ -243,21 +225,7 @@ class TestDownlink(unittest.TestCase):
     #    resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
 
 def sendValueWaziDev(val):
-    msg = wazidev_serial.readline()
-    #Await prompt
-    while ("Enter" not in msg.decode('unicode_escape')):
-        msg = wazidev_serial.readline()
-        print (msg.decode('unicode_escape'), end='', flush=True)
-
-    # send value
-    wazidev_serial.write(val.encode())
-   
-    # Await LoRaWAN OK
-    while ("OK" not in msg.decode('unicode_escape')):
-        msg = wazidev_serial.readline()
-        print (msg.decode('unicode_escape'), end='', flush=True)
-
-    return ...
+    interface.sendLoRaWAN(val)
 
 if __name__ == '__main__':
     with open('results.xml', 'wb') as output:
@@ -265,4 +233,3 @@ if __name__ == '__main__':
                       failfast=False, 
                       buffer=False, 
                       catchbreak=False)
-
