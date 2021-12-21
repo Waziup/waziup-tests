@@ -174,7 +174,7 @@ class TestUplink(unittest.TestCase):
         sendValueWaziDev("62\n")
         time.sleep(12)
 
-        # Check that the value has been received in the Cloud
+        # Check that the value has been received at the WaziGate
         resp = requests.get(wazigate_url + '/devices/' + self.dev_id + "/sensors", headers = self.token)
         print(resp.json())
         self.assertEqual(resp.status_code, 200)
@@ -225,7 +225,7 @@ class TestDownlink(unittest.TestCase):
         
         time.sleep(1)
         # Send a value with WaziDev to get the receive window
-        res = sendValueWaziDev("62\n")
+        (e, res) = interface.sendLoRaWAN(1)
         self.assertEqual(res, 10)
 
   
@@ -235,7 +235,13 @@ class TestDownlink(unittest.TestCase):
     #    resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
 
 def sendValueWaziDev(val):
-    interface.sendLoRaWAN(val)
+    (e, val) = interface.sendLoRaWAN(val)
+    if e == 0:
+            print(val)
+    elif e==2:
+            print("Nothing received")
+    else:
+            print("Error: " + str(e))
 
 if __name__ == '__main__':
     with open('results.xml', 'wb') as output:
@@ -243,3 +249,4 @@ if __name__ == '__main__':
                       failfast=False, 
                       buffer=False, 
                       catchbreak=False)
+    sendValueWaziDev(1)
