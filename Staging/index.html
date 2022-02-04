@@ -1,0 +1,55 @@
+<html>
+	<head>
+		<script>
+			function sendValue() {
+				var requestBody = "{\"val\": \"" + document.getElementById('value').value + "\"}";
+				var client=new XMLHttpRequest();
+				client.open("post","http://wazidev-api.staging.waziup.io/");
+				client.setRequestHeader('Accept','application/json');
+				client.setRequestHeader('Content-Type','application/json');
+				
+				client.onreadystatechange = function() {
+				    if(this.readyState = this.DONE) {
+				        document.getElementById("response").innerHTML="Response: " + this.status + " " + this.response;
+				    }
+				
+				};
+				client.send(requestBody);
+				document.getElementById("response").innerHTML="Sending...";
+			}
+		</script>
+	</head>
+	<body>
+  <h1> Welcome to the Waziup CI/CD server!</h1>
+
+  The source code of WaziDev, WaziGate and WaziCloud is compiled every night by this server, and then run in a staging environment. <br/>
+  The 3 components are then tested automatically, you can check the test results in <a href=http://jenkins.staging.waziup.io>Jenkins</a>.<br/>
+  You can also trigger a manual build in Jenkins if you want to test your change quickly.<br/>
+  In the following sections, you can find the various UIs in the staging environment.<br/><br/>
+
+  <a href="http://jenkins.staging.waziup.io" target="_blank"> Go to Jenkins</a>
+  <h2> WaziCloud staging </h2>
+  <ul> 
+    <li><a href="http://wazicloud-dashboard.staging.waziup.io" target="_blank">WaziCloud dashboard</a></li>
+    <li><a href="http://wazicloud-keycloak.staging.waziup.io" target="_blank">Keycloak</a></li>
+    <li><a href="http://wazicloud-api.staging.waziup.io" target="_blank">WaziCloud API</a></li>
+  </ul>
+  
+  <h2> WaziGate staging </h2>
+  <ul>
+    <li><a href="http://wazigate-dashboard.staging.waziup.io" target="_blank">WaziGate dashboard</a></li>
+    <li><a href="http://wazigate-chirpstack.staging.waziup.io" target="_blank">Chirpstack</a></li>
+  </ul>
+
+  <h2> WaziDev staging </h2>
+
+  A WaziDev is attached to the staging server on /dev/ttyUSB0. It is running <a href=https://github.com/Waziup/WaziDev/tree/master/tests/LoRaWAN-test>this test program.</a>
+  You can copy/paste the LoRaWAN keys in the gateway to see the values.
+  <br/><br/>
+
+  <label for="value">Send a value with WaziDev:</label>
+  <input id="value" value="30">
+  <button type="submit" onClick="sendValue()">Send</button><br/>
+  <span id="response"></span>
+</html>
+

@@ -44,7 +44,6 @@ wazigate_url = 'http://' + wazigate_ip
 wazicloud_url = os.getenv('WAZICLOUD_URL', 'http://localhost:800/api/v2')
 
 wazigate_device = {
-#  'id': 'testDev',
   'name': 'test',
   'sensors': [],
   'actuators': []
@@ -171,10 +170,10 @@ class TestUplink(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         
         # Send a value with WaziDev
-        sendValueWaziDev("62\n")
+        interface.sendLoRaWAN(62)
         time.sleep(12)
 
-        # Check that the value has been received in the Cloud
+        # Check that the value has been received at the WaziGate
         resp = requests.get(wazigate_url + '/devices/' + self.dev_id + "/sensors", headers = self.token)
         print(resp.json())
         self.assertEqual(resp.status_code, 200)
@@ -225,7 +224,8 @@ class TestDownlink(unittest.TestCase):
         
         time.sleep(1)
         # Send a value with WaziDev to get the receive window
-        res = sendValueWaziDev(0)
+        (e, res) = interface.sendLoRaWAN(1)
+        self.assertEqual(e, 0)
         self.assertEqual(res, 10)
 
   
@@ -243,3 +243,4 @@ if __name__ == '__main__':
                       failfast=False, 
                       buffer=False, 
                       catchbreak=False)
+    sendValueWaziDev(1)
