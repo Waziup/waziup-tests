@@ -9,22 +9,6 @@ pipeline {
         sh 'pip3 install unittest-xml-reporting arduino-simple-rpc'
       }
     }
-    stage('Flash WaziDev') {
-      steps {
-        echo "WaziDev port is $WAZIDEV_PORT"
-        sh "echo $PATH"
-        sh "sudo -E echo $PATH"
-        dir('WaziDev'){
-          git url: 'https://github.com/Waziup/WaziDev.git'
-          dir("tests/LoRaWAN-test/") {
-            sh 'sudo arduino-cli core install arduino:avr'
-            sh 'arduino-cli lib install simpleRPC'
-            sh 'arduino-cli compile --fqbn arduino:avr:pro:cpu=8MHzatmega328 --libraries ../../libraries'
-            sh 'sudo arduino-cli upload -p $WAZIDEV_PORT --fqbn arduino:avr:pro:cpu=8MHzatmega328'
-          }
-        }
-      }
-    }
     stage('Test') {
       steps {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
