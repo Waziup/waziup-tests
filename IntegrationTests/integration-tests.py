@@ -44,7 +44,7 @@ wazigate_url = 'http://' + wazigate_ip
 wazicloud_url = os.getenv('WAZICLOUD_URL', 'http://localhost:800/api/v2')
 
 wazigate_device = {
-  'id': 'testDev',
+#  'id': 'testDev',
   'name': 'test',
   'sensors': [],
   'actuators': []
@@ -78,7 +78,7 @@ def_cloud = {
 class TestCloudSync(unittest.TestCase):
 
     token = None
-    dev_id = wazigate_device['id']
+    dev_id = None
     def setUp(self):
         # Get WaziGate token
         resp = requests.post(wazigate_url + '/auth/token', json = auth) 
@@ -148,7 +148,7 @@ class TestCloudSync(unittest.TestCase):
 class TestUplink(unittest.TestCase):
 
     token = None
-    dev_id = wazigate_device['id']
+    dev_id = None
     def setUp(self):
         # Get WaziGate token
         resp = requests.post(wazigate_url + '/auth/token', json = auth) 
@@ -188,7 +188,7 @@ class TestUplink(unittest.TestCase):
 class TestDownlink(unittest.TestCase):
 
     token = None
-    dev_id = wazigate_device['id']
+    dev_id = None 
     def setUp(self):
         # Get WaziGate token
         resp = requests.post(wazigate_url + '/auth/token', json = auth) 
@@ -225,7 +225,7 @@ class TestDownlink(unittest.TestCase):
         
         time.sleep(1)
         # Send a value with WaziDev to get the receive window
-        res = sendValueWaziDev("62\n")
+        res = sendValueWaziDev(0)
         self.assertEqual(res, 10)
 
   
@@ -234,8 +234,8 @@ class TestDownlink(unittest.TestCase):
     #    resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
     #    resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
 
-def sendValueWaziDev(val):
-    interface.sendLoRaWAN(val)
+def sendValueWaziDev(val: int) -> str:
+    return interface.sendLoRaWAN(val)
 
 if __name__ == '__main__':
     with open('results.xml', 'wb') as output:
