@@ -29,6 +29,13 @@ import os
 import sys
 from xmlrunner import XMLTestRunner
 from simple_rpc import Interface
+import logging
+
+logging.basicConfig()
+logging.getLogger().setLevel(logging.DEBUG)
+requests_log = logging.getLogger("requests.packages.urllib3")
+requests_log.setLevel(logging.DEBUG)
+requests_log.propagate = True
 
 wazidev_port = os.getenv("WAZIDEV_PORT", '/dev/ttyUSB0')
 
@@ -81,7 +88,7 @@ class TestCloudSync(unittest.TestCase):
     def setUp(self):
         # Get WaziGate token
         resp = requests.post(wazigate_url + '/auth/token', json = auth) 
-        self.token = {"Authorization": "Bearer " + resp.text.strip('"')}
+        self.token = {"Authorization": "Bearer " + resp.json()}
         # Delete test device if exists
         #resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
         
@@ -95,7 +102,7 @@ class TestCloudSync(unittest.TestCase):
 
         # Create a new device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
-        self.dev_id = resp.text
+        self.dev_id = resp.json()
         self.assertEqual(resp.status_code, 200)
         
         # Check WaziCloud for the presence of the new device
@@ -108,7 +115,7 @@ class TestCloudSync(unittest.TestCase):
 
         # Create a new device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
-        self.dev_id = resp.text
+        self.dev_id = resp.json()
         self.assertEqual(resp.status_code, 200)
         
         resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/sensors', json={'id':'testSen', 'name':'testSen'}, headers = self.token)
@@ -124,7 +131,7 @@ class TestCloudSync(unittest.TestCase):
 
         # Create a new device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
-        self.dev_id = resp.text
+        self.dev_id = resp.json()
         self.assertEqual(resp.status_code, 200)
         
         resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/actuators', json = {'id':'testAct', 'name':'testSen'}, headers = self.token)
@@ -162,7 +169,7 @@ class TestUplink(unittest.TestCase):
 
         # Create a new device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
-        self.dev_id = resp.text
+        self.dev_id = resp.json()
         self.assertEqual(resp.status_code, 200)
 
         # Add the LoRaWAN meta information
