@@ -95,10 +95,12 @@ class TestCloudSync(unittest.TestCase):
         
         # create Cloud sync
         resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=True, headers = self.token)
+        sleep(1)
         resp = requests.post(wazigate_url + '/clouds/waziup/rest', json="http://wazicloud-api.staging.waziup.io/api/v2", headers = self.token)
         resp = requests.post(wazigate_url + '/clouds/waziup/username', json="admin", headers = self.token)
         resp = requests.post(wazigate_url + '/clouds/waziup/token', json="admin", headers = self.token)
         resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=False, headers = self.token)
+        sleep(1)
         self.assertEqual(resp.status_code, 200)
 
     # Test device creation upload to Cloud
