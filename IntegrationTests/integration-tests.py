@@ -141,7 +141,7 @@ class TestCloudSync(unittest.TestCase):
         print(self.act_id)
         
         # Check WaziCloud for the presence of the new actuator
-        resp = requests.get(wazicloud_url + '/devices/testDev/actuators/' + self.act_id)
+        resp = requests.get(wazicloud_url + '/devices/' + self.dev_id + '/actuators/' + self.act_id)
         self.assertEqual(resp.status_code, 200)
 
 
