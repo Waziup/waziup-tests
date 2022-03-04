@@ -94,12 +94,12 @@ class TestCloudSync(unittest.TestCase):
         #resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
         
         # create Cloud sync
-        resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=true, headers = self.token)
+        resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=True, headers = self.token)
         resp = requests.post(wazigate_url + '/clouds/waziup/rest', json="http://wazicloud-api.staging.waziup.io/api/v2", headers = self.token)
         resp = requests.post(wazigate_url + '/clouds/waziup/mqtt', json="", headers = self.token)
         resp = requests.post(wazigate_url + '/clouds/waziup/username', json="admin", headers = self.token)
         resp = requests.post(wazigate_url + '/clouds/waziup/token', json="admin", headers = self.token)
-        resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=false, headers = self.token)
+        resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=False, headers = self.token)
         self.assertEqual(resp.status_code, 200)
 
     # Test device creation upload to Cloud
