@@ -139,12 +139,12 @@ class TestCloudSync(unittest.TestCase):
         self.dev_id = resp.json()
         self.assertEqual(resp.status_code, 200)
         
-        resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/actuators', json = {'id':'testAct', 'name':'testSen'}, headers = self.token)
+        resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/actuators', json = {'id':'testAct', 'name':'testAct'}, headers = self.token)
         self.act_id = resp.json()
         self.assertEqual(resp.status_code, 200)
         print(self.dev_id)
         print(self.act_id)
-        
+        sleep(5)
         # Check WaziCloud for the presence of the new actuator
         resp = requests.get(wazicloud_url + '/devices/' + self.dev_id + '/actuators/' + self.act_id)
         self.assertEqual(resp.status_code, 200)
