@@ -48,7 +48,7 @@ wazidev_actuator_value = json.dumps(True)
 
 wazigate_ip = os.environ.get('WAZIGATE_IP', '172.16.11.212')
 wazigate_url = 'http://' + wazigate_ip
-wazicloud_url = os.getenv('WAZICLOUD_URL', 'http://localhost:800/api/v2')
+wazicloud_url = os.getenv('WAZICLOUD_URL', 'http://wazicloud-api.staging.waziup.io/api/v2')
 
 wazigate_device = {
   'name': 'test',
@@ -73,11 +73,11 @@ auth = {
 }
 
 def_cloud = {
-  "rest": "//api.waziup.io/api/v2",
+  "rest": "http://wazicloud-api.staging.waziup.io/api/v2",
   "mqtt": "",
   "credentials": {
-      "username": "my username",
-      "token": "my password"
+      "username": "admin",
+      "token": "admin"
   }
 }
 
@@ -93,8 +93,8 @@ class TestCloudSync(unittest.TestCase):
         #resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
         
         # create Cloud sync
-        #resp = requests.post(wazigate_url + '/clouds', json=def_cloud, headers = self.token)
-        #self.assertEqual(resp.status_code, 200)
+        resp = requests.post(wazigate_url + '/clouds', json=def_cloud, headers = self.token)
+        self.assertEqual(resp.status_code, 200)
 
     # Test device creation upload to Cloud
     def test_device_upload(self):
@@ -135,13 +135,13 @@ class TestCloudSync(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         
         resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/actuators', json = {'id':'testAct', 'name':'testSen'}, headers = self.token)
-        self.act_id = resp.text
+        self.act_id = resp.json()
         self.assertEqual(resp.status_code, 200)
         print(self.dev_id)
         print(self.act_id)
         
         # Check WaziCloud for the presence of the new actuator
-        resp = requests.get(wazicloud_url + '/devices/testDev/actuators/testAct' + self.act_id)
+        resp = requests.get(wazicloud_url + '/devices/testDev/actuators/' + self.act_id)
         self.assertEqual(resp.status_code, 200)
 
 
@@ -158,7 +158,7 @@ class TestUplink(unittest.TestCase):
     def setUp(self):
         # Get WaziGate token
         resp = requests.post(wazigate_url + '/auth/token', json = auth) 
-        self.token = {"Authorization": "Bearer " + resp.text.strip('"')}
+        self.token = {"Authorization": "Bearer " + resp.json()}
         # Delete test device if exists
         #resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
 
@@ -198,7 +198,7 @@ class TestDownlink(unittest.TestCase):
     def setUp(self):
         # Get WaziGate token
         resp = requests.post(wazigate_url + '/auth/token', json = auth) 
-        self.token = {"Authorization": "Bearer " + resp.text.strip('"')}
+        self.token = {"Authorization": "Bearer " + resp.json()}
         # Delete test device if exists
         #resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
 
@@ -209,7 +209,7 @@ class TestDownlink(unittest.TestCase):
 
         # Create a new device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
-        self.dev_id = resp.text
+        self.dev_id = resp.json()
         self.assertEqual(resp.status_code, 200)
 
         # Add LoRaWAN meta information
