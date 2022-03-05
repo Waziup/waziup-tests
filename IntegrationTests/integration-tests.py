@@ -81,30 +81,29 @@ def_cloud = {
       "token": "admin"
   }
 }
-        
-# Get WaziGate token
-resp = requests.post(wazigate_url + '/auth/token', json = auth) 
-self.token = {"Authorization": "Bearer " + resp.json()}
-# create Cloud sync
-resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=True, headers = self.token)
-sleep(1)
-resp = requests.post(wazigate_url + '/clouds/waziup/rest', json="http://wazicloud-api.staging.waziup.io/api/v2", headers = self.token)
-resp = requests.post(wazigate_url + '/clouds/waziup/username', json="admin", headers = self.token)
-resp = requests.post(wazigate_url + '/clouds/waziup/token', json="admin", headers = self.token)
-resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=False, headers = self.token)
-sleep(1)
-self.assertEqual(resp.status_code, 200)
 
 class TestCloudSync(unittest.TestCase):
 
     token = None
     dev_id = None
+    @classmethod
+    def setUpClass(cls):
+        # Get WaziGate token
+        resp = requests.post(wazigate_url + '/auth/token', json = auth) 
+        token = {"Authorization": "Bearer " + resp.json()}
+        # create Cloud sync
+        resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=True, headers = token)
+        sleep(1)
+        resp = requests.post(wazigate_url + '/clouds/waziup/rest', json="http://wazicloud-api.staging.waziup.io/api/v2", headers = token)
+        resp = requests.post(wazigate_url + '/clouds/waziup/username', json="admin", headers = token)
+        resp = requests.post(wazigate_url + '/clouds/waziup/token', json="admin", headers = token)
+        resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=False, headers = token)
+        sleep(1)
+
     def setUp(self):
         # Get WaziGate token
         resp = requests.post(wazigate_url + '/auth/token', json = auth) 
         self.token = {"Authorization": "Bearer " + resp.json()}
-        # Delete test device if exists
-        #resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
 
     # Test device creation upload to Cloud
     def test_device_upload(self):
