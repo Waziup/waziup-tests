@@ -188,7 +188,8 @@ class TestUplink(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         
         # Send a value with WaziDev
-        interface.sendLoRaWAN(62)
+        res = interface.sendLoRaWAN(62)
+        print(res)
         time.sleep(12)
 
         # Check that the value has been received at the WaziGate
