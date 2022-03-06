@@ -129,10 +129,12 @@ class TestCloudSync(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         
         resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/sensors', json={'id':'testSen', 'name':'testSen'}, headers = self.token)
+        self.act_id = resp.json()
         self.assertEqual(resp.status_code, 200)
+        sleep(2)
         
         # Check WaziCloud for the presence of the new sensor
-        resp = requests.get(wazicloud_url + '/devices/' + self.dev_id + '/sensors/testSen')
+        resp = requests.get(wazicloud_url + '/devices/' + self.dev_id + '/sensors/' + self.act_id)
         self.assertEqual(resp.status_code, 200)
 
     # Test sensor creation upload to Cloud
@@ -147,9 +149,7 @@ class TestCloudSync(unittest.TestCase):
         resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/actuators', json = {'id':'testAct', 'name':'testAct'}, headers = self.token)
         self.act_id = resp.json()
         self.assertEqual(resp.status_code, 200)
-        print(self.dev_id)
-        print(self.act_id)
-        sleep(5)
+        sleep(2)
         # Check WaziCloud for the presence of the new actuator
         resp = requests.get(wazicloud_url + '/devices/' + self.dev_id + '/actuators/' + self.act_id)
         self.assertEqual(resp.status_code, 200)
