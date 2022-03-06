@@ -92,14 +92,14 @@ class TestCloudSync(unittest.TestCase):
         resp = requests.post(wazigate_url + '/auth/token', json = auth) 
         token = {"Authorization": "Bearer " + resp.json()}
         # create Cloud sync
-        resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=True, headers = token)
-        sleep(1)
+        #resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=True, headers = token)
+        #sleep(1)
         resp = requests.post(wazigate_url + '/clouds/waziup/rest', json="http://wazicloud-api.staging.waziup.io/api/v2", headers = token)
         resp = requests.post(wazigate_url + '/clouds/waziup/username', json="admin", headers = token)
         resp = requests.post(wazigate_url + '/clouds/waziup/token', json="admin", headers = token)
         sleep(2)
-        resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=False, headers = token)
-        sleep(1)
+        #resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=False, headers = token)
+        #sleep(1)
 
     def setUp(self):
         # Get WaziGate token
