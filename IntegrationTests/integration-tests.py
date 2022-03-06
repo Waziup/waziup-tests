@@ -114,6 +114,7 @@ class TestCloudSync(unittest.TestCase):
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
         self.dev_id = resp.json()
         self.assertEqual(resp.status_code, 200)
+        sleep(2)
         
         # Check WaziCloud for the presence of the new device
         resp = requests.get(wazicloud_url + '/devices/' + self.dev_id)
