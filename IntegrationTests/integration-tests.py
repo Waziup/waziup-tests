@@ -95,7 +95,7 @@ class TestCloudSync(unittest.TestCase):
         # create Cloud sync
         resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=True, headers = token)
         sleep(3)
-        resp = requests.post(wazigate_url + '/clouds/waziup/rest', json="http://wazicloud-api.staging.waziup.io/api/v2", headers = token)
+        resp = requests.post(wazigate_url + '/clouds/waziup/rest', json=wazicloud_url, headers = token)
         resp = requests.post(wazigate_url + '/clouds/waziup/username', json="admin", headers = token)
         resp = requests.post(wazigate_url + '/clouds/waziup/token', json="admin", headers = token)
         sleep(3)
