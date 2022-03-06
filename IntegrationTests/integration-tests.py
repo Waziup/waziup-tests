@@ -48,7 +48,8 @@ wazidev_actuator_value = json.dumps(True)
 
 wazigate_ip = os.environ.get('WAZIGATE_IP', '172.16.11.212')
 wazigate_url = 'http://' + wazigate_ip
-wazicloud_url = os.getenv('WAZICLOUD_URL', 'http://wazicloud-api.staging.waziup.io/api/v2')
+#wazicloud_url = os.getenv('WAZICLOUD_URL', 'http://wazicloud-api.staging.waziup.io/api/v2')
+wazicloud_url = os.getenv('WAZICLOUD_URL', 'http://172.16.11.191/api/v2')
 
 wazigate_device = {
   'name': 'test',
@@ -216,7 +217,7 @@ class TestDownlink(unittest.TestCase):
 
 
     # Test value sent from WaziDev
-    def test_wazidev_value_upload(self):
+    def test_wazidev_value_downlink(self):
         """ Test value upload from WaziDev to gateway"""
 
         # Create a new device on WaziGate
