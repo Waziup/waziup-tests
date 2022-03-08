@@ -48,8 +48,7 @@ wazidev_actuator_value = json.dumps(True)
 
 wazigate_ip = os.environ.get('WAZIGATE_IP', '172.16.11.212')
 wazigate_url = 'http://' + wazigate_ip
-#wazicloud_url = os.getenv('WAZICLOUD_URL', 'http://wazicloud-api.staging.waziup.io/api/v2')
-wazicloud_url = os.getenv('WAZICLOUD_URL', 'http://172.16.11.191/api/v2')
+wazicloud_url = os.getenv('WAZICLOUD_URL', 'http://172.16.11.191:800/api/v2')
 
 wazigate_device = {
   'name': 'test',
@@ -71,16 +70,6 @@ meta = {
 auth = {
   "username": "admin",
   "password": "loragateway"
-}
-
-def_cloud = {
-  "id" : "waziup",
-  "paused":"false",
-  "rest": "http://wazicloud-api.staging.waziup.io/api/v2",
-  "credentials": {
-      "username": "admin",
-      "token": "admin"
-  }
 }
 
 class TestCloudSync(unittest.TestCase):
