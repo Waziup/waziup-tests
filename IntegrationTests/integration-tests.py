@@ -191,7 +191,7 @@ class TestUplink(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json()[0]['value'], 62)
    
-    def tearDown(self)
+    def tearDown(self):
         # Delete the device (to free the DevAddr)
         resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
   
