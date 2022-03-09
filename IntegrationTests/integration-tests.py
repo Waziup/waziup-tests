@@ -226,7 +226,7 @@ class TestDownlink(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
 
         # Actuate on the Cloud 
-        resp = requests.post(wazicloud_url + '/devices/' + self.dev_id + '/actuators/test/value', json=10)
+        resp = requests.put(wazicloud_url + '/devices/' + self.dev_id + '/actuators/test/value', json=10)
         self.assertEqual(resp.status_code, 200)
 
         # Check actuator value at gateway
