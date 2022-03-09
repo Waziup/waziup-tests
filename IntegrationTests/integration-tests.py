@@ -50,6 +50,7 @@ wazidev_actuator_value = json.dumps(True)
 wazigate_ip = os.environ.get('WAZIGATE_IP', '172.16.11.212')
 wazigate_url = 'http://' + wazigate_ip
 wazicloud_url = os.getenv('WAZICLOUD_URL', 'http://172.16.11.191:800/api/v2')
+wazicloud_mqtt = os.getenv('WAZICLOUD_MQTT', 'mqtt://172.16.11.191:3883')
 
 wazigate_device = {
   'name': 'test',
@@ -86,6 +87,7 @@ class TestCloudSync(unittest.TestCase):
         resp = requests.post(wazigate_url + '/clouds/waziup/paused', json=True, headers = token)
         sleep(3)
         resp = requests.post(wazigate_url + '/clouds/waziup/rest', json=wazicloud_url, headers = token)
+        resp = requests.post(wazigate_url + '/clouds/waziup/mqtt', json=wazicloud_mqtt, headers = token)
         resp = requests.post(wazigate_url + '/clouds/waziup/username', json="admin", headers = token)
         resp = requests.post(wazigate_url + '/clouds/waziup/token', json="admin", headers = token)
         sleep(3)
