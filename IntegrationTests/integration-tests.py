@@ -39,6 +39,7 @@ requests_log.propagate = True
 
 wazidev_port = os.getenv("WAZIDEV_PORT", '/dev/ttyUSB0')
 
+#Get WaziDev RPC interface
 interface = Interface(wazidev_port)
 
 wazidev_sensor_id = 'temperatureSensor_1'
@@ -187,11 +188,11 @@ class TestUplink(unittest.TestCase):
         print(resp.json())
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json()[0]['value'], 62)
+    
+        # Delete the device (to free the DevAddr)
+        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        self.assertEqual(resp.status_code, 200)
   
-    # Remove resources that was created
-    #def tearDown(self):
-    #    resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
-    #    resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
 
 class TestDownlink(unittest.TestCase):
 
