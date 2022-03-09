@@ -193,7 +193,7 @@ class TestUplink(unittest.TestCase):
    
     def tearDown(self):
         # Delete the device (to free the DevAddr)
-        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        #resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
   
 
 class TestDownlink(unittest.TestCase):
@@ -242,8 +242,8 @@ class TestDownlink(unittest.TestCase):
 
   
     # Remove resources that was created
-    #def tearDown(self):
-    #    resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+    def tearDown(self):
+        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
 
 def sendValueWaziDev(val: int) -> str:
     return interface.sendLoRaWAN(val)
