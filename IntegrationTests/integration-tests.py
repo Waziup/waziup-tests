@@ -37,8 +37,7 @@ requests_log = logging.getLogger("requests.packages.urllib3")
 requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True
 
-# Get WaziDev dev (we use a udev rule to make sure it's always the same)
-wazidev_port = os.getenv("WAZIDEV_PORT", '/dev/ttyUSBWaziDev')
+wazidev_port = os.getenv("WAZIDEV_PORT", '/dev/ttyUSB0')
 
 #Get WaziDev RPC interface
 interface = Interface(wazidev_port)
@@ -243,8 +242,8 @@ class TestDownlink(unittest.TestCase):
 
   
     # Remove resources that was created
-    def tearDown(self):
-        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+    #def tearDown(self):
+    #    resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
 
 def sendValueWaziDev(val: int) -> str:
     return interface.sendLoRaWAN(val)
