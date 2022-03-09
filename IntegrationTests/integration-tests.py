@@ -37,7 +37,8 @@ requests_log = logging.getLogger("requests.packages.urllib3")
 requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True
 
-wazidev_port = os.getenv("WAZIDEV_PORT", '/dev/ttyUSB0')
+# Get WaziDev dev (we use a udev rule to make sure it's always the same)
+wazidev_port = os.getenv("WAZIDEV_PORT", '/dev/ttyUSBWaziDev')
 
 #Get WaziDev RPC interface
 interface = Interface(wazidev_port)
