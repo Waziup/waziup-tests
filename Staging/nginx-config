@@ -1,0 +1,75 @@
+
+server {
+	listen 80;
+	server_name staging.waziup.io;
+
+	location / {
+		autoindex on;
+		root /var/www/Staging;
+	}
+}
+server {
+	listen 80;
+	server_name jenkins.staging.waziup.io;
+
+	location / {
+        	proxy_pass http://localhost:8123/;
+		proxy_set_header Host $host;
+	}
+}
+server {
+	listen 80;
+	server_name wazicloud-dashboard.staging.waziup.io;
+	location / {
+        	proxy_pass http://localhost:3000/;
+		proxy_redirect     off;
+		proxy_set_header   Host $host;
+	}
+}
+server {
+	listen 80;
+	server_name wazicloud-api.staging.waziup.io;
+	location / {
+        	proxy_pass http://localhost:800/;
+	}
+}
+server {
+	listen 80;
+	server_name wazicloud-keycloak.staging.waziup.io;
+
+	location / {
+        	proxy_pass http://localhost:8080/;
+		proxy_set_header Host $host;
+	}
+}
+server {
+	listen 80;
+	server_name wazigate-dashboard.staging.waziup.io;
+
+	location / {
+        	proxy_pass http://172.16.11.208:80/;
+	}
+}
+server {
+	listen 80;
+	server_name wazigate-dashboard-stable.staging.waziup.io;
+
+	location / {
+        	proxy_pass http://172.16.11.211:80/;
+	}
+}
+server {
+	listen 80;
+	server_name wazigate-chirpstack.staging.waziup.io;
+
+	location / {
+        	proxy_pass http://172.16.11.208:8080/;
+	}
+}
+server {
+	listen 80;
+	server_name wazidev-api.staging.waziup.io;
+	location / {
+        	proxy_pass http://localhost:5000/;
+	}
+}
