@@ -1,4 +1,3 @@
-
 server {
 	listen 80;
 	server_name staging.waziup.io;
@@ -55,7 +54,7 @@ server {
 	server_name wazigate-dashboard-stable.staging.waziup.io;
 
 	location / {
-        	proxy_pass http://172.16.11.211:80/;
+        	proxy_pass http://172.16.11.161:80/;
 	}
 }
 server {
@@ -71,5 +70,26 @@ server {
 	server_name wazidev-api.staging.waziup.io;
 	location / {
         	proxy_pass http://localhost:5000/;
+	}
+}
+server {
+	listen 80;
+	server_name lab.staging.waziup.io;
+	location / {
+        	proxy_pass http://localhost:8467/;
+	}
+}
+server {
+	listen 80;
+	server_name website.staging.waziup.io;
+	location / {
+        	proxy_pass http://localhost:81/;
+	}
+}
+server {
+	listen 80;
+	server_name webhook.staging.waziup.io;
+	location / {
+        	proxy_pass http://localhost:9000/;
 	}
 }
