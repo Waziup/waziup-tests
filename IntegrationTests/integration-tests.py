@@ -106,12 +106,12 @@ class TestCloudSync(unittest.TestCase):
         # Create a new device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
         self.dev_id = resp.json()
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200, "Can't create device on the gateway.")
         sleep(2)
         
         # Check WaziCloud for the presence of the new device
         resp = requests.get(wazicloud_url + '/devices/' + self.dev_id)
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200, "Device not created at the Cloud.")
 
     # Test sensor creation upload to Cloud
     def test_sensor_upload(self):
@@ -129,9 +129,9 @@ class TestCloudSync(unittest.TestCase):
         
         # Check WaziCloud for the presence of the new sensor
         resp = requests.get(wazicloud_url + '/devices/' + self.dev_id + '/sensors/' + self.act_id)
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200, "Sensor not created at the Cloud.")
 
-    # Test sensor creation upload to Cloud
+    # Test actuator creation upload to Cloud
     def test_actuator_upload(self):
         """ Test actuator sync from gateway to Cloud"""
 
@@ -146,7 +146,7 @@ class TestCloudSync(unittest.TestCase):
         sleep(2)
         # Check WaziCloud for the presence of the new actuator
         resp = requests.get(wazicloud_url + '/devices/' + self.dev_id + '/actuators/' + self.act_id)
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200, "Actuator not created at the Cloud.")
 
 
     # Remove resources that was created
@@ -178,7 +178,7 @@ class TestUplink(unittest.TestCase):
 
         # Add the LoRaWAN meta information
         resp = requests.post(wazigate_url + '/devices/' + self.dev_id + "/meta", json = meta, headers = self.token)
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200, "Cannot add the LoRaWAN meta information")
         
         # Send a value with WaziDev
         res = interface.sendLoRaWAN(62)
@@ -189,7 +189,7 @@ class TestUplink(unittest.TestCase):
         resp = requests.get(wazigate_url + '/devices/' + self.dev_id + "/sensors", headers = self.token)
         print(resp.json())
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json()[0]['value'], 62)
+        self.assertEqual(resp.json()[0]['value'], 62, "Value not received by the gateway")
    
     def tearDown(self):
         # Delete the device (to free the DevAddr)
@@ -223,16 +223,16 @@ class TestDownlink(unittest.TestCase):
        
         # Create the actuator
         resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/actuators', json={'name':'test'}, headers = self.token)
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200, "Cannot create the actuator")
 
         # Actuate on the Cloud 
         resp = requests.put(wazicloud_url + '/devices/' + self.dev_id + '/actuators/test/value', json=10)
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200, "Cannot actuate on the Cloud")
 
         # Check actuator value at gateway
         resp = requests.get(wazigate_url + '/devices/' + self.dev_id + '/actuators/test', headers = self.token)
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json()[0]['value'], 10)
+        self.assertEqual(resp.json()[0]['value'], 10, "Wrong or no actuator value at gateway")
         
         time.sleep(1)
         # Send a value with WaziDev to get the receive window
