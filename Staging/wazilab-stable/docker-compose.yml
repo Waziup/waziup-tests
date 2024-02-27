@@ -1,0 +1,33 @@
+version: "3"
+services:
+  wazilab:
+    image: waziup/wazilab:2.1.1
+    container_name: wazilab-stable
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8467:8467"
+    network_mode: "host"
+    environment:
+      - LAB_ADDR=http://lab-stable.staging.waziup.io/
+      - LAB_DATABASE=postgres://postgres:admin@localhost:5432/wazilab-stable
+      - LAB_WAZICLOUD_CLIENT_ID=solution-lab-1
+      - LAB_WAZICLOUD_CLIENT_SECRET=123456
+      - LAB_LISTEN=0.0.0.0:8468
+      - LAB_UNSAFE_ADMIN_PASSWORD=admin
+      - LAB_EMAIL_HOST=smtp.gmail.com
+      - LAB_EMAIL_HOST_PORT=587
+      - LAB_EMAIL_FROM=lab@waziup.io
+      - LAB_EMAIL_FROM_DISPLAY_NAME=Learning Center
+      - LAB_EMAIL_ENABLE_AUTHENTICATION=true
+      - LAB_EMAIL_ENABLE_START_TLS=true
+      - LAB_EMAIL_USERNAME=waziup.iot@gmail.com
+      - LAB_EMAIL_PASSWORD=izhrryrxfpmtshed
+    volumes:
+      - /data/wazilab-stable/files:/var/lib/wazilab/files
+
+volumes:
+  postgresql:
+  files:
+
