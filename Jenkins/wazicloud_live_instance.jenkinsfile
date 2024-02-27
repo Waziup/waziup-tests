@@ -1,7 +1,7 @@
 pipeline {
   agent any
   environment {
-    API_URL  = 'https://api.waziup.io/api/v2'
+    API_URL  = 'https://api.waziup.io'
     MQTT_URL = 'tcp://api.waziup.io:3883'
   }
   stages {

@@ -3,6 +3,9 @@ pipeline {
   environment {
     ARDUINO_DIRECTORIES_USER = "${env.WORKSPACE}/WaziDev"
   }
+  options {
+    timeout(time: 1, unit: 'HOURS')
+  }
   stages {
     stage('Prepare') {
       steps {
