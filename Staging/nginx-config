@@ -77,6 +77,15 @@ server {
 	server_name lab.staging.waziup.io;
 	location / {
         	proxy_pass http://localhost:8467/;
+		proxy_set_header Host $host;
+	}
+}
+server {
+	listen 80;
+	server_name lab-stable.staging.waziup.io;
+	location / {
+        	proxy_pass http://localhost:8468/;
+		proxy_set_header Host $host;
 	}
 }
 server {
