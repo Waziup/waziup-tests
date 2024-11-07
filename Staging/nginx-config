@@ -107,7 +107,7 @@ server {
 	server_name website.staging.waziup.io;
 
 	location / {
-		proxy_pass http://localhost:81/;
+		root /var/www/website.staging.waziup.io;
 	}
 }
 
@@ -117,5 +117,6 @@ server {
 
 	location / {
 		proxy_pass http://localhost:9000/;
+		proxy_set_header Host $host;
 	}
 }
