@@ -3,7 +3,7 @@ pipeline {
   environment {
     API_URL  = 'https://api.waziup.io'
     MQTT_URL = 'tcp://api.waziup.io:3883'
-    ADMIN_PASS = LIVE_CLOUD_ADMIN_PASS
+    ADMIN_PASS = "${LIVE_CLOUD_ADMIN_PASS}"
   }
   stages {
     stage('Prepare') {
