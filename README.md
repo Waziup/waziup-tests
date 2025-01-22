@@ -40,3 +40,30 @@ URLS
 nginx is running on the staging server with [this config](Staging/nginx-config).
 The idea is to ventilate all the subdomains of `staging.waziup.io` to the various services.
 
+
+Integration tests
+=================
+
+The goal of integration testing is to test the full chain:
+WaziDev <-> WaziGate <-> WaziCloud
+both ways (uplink and downlink paths) using components REST API.
+
+You can find the tests in the folder IntegrationTests.
+You can run them like this:
+
+```
+export WAZIGATE_IP=172.16.11.192 
+export WAZICLOUD_URL=http://35.157.161.231:800/api/v2 
+export WAZICLOUD_MQTT=mqtt://35.157.161.231:3883 
+sudo -E python3 integration-tests.py
+```
+
+You can provide on the command line:
+- the IP of you gateway
+- the URL of the Cloud API
+- the URL of the Cloud MQTT
+
+You also need to have a WaziDev running this program:
+https://github.com/Waziup/WaziDev/blob/master/tests/LoRaWAN-test/LoRaWAN-test.ino
+
+The WaziDev needs to be connected to your Linux PC using a USB cable. It should be available under `/dev/ttyUSB0`
