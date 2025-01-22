@@ -234,7 +234,7 @@ class TestDownlink(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json()[0]['value'], 10, "Wrong or no actuator value at gateway")
         
-        time.sleep(1)
+        time.sleep(10)
         # Send a value with WaziDev to get the receive window
         (e, res) = interface.sendLoRaWAN(1)
         self.assertEqual(e, 0)
