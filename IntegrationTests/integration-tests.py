@@ -150,9 +150,9 @@ class TestCloudSync(unittest.TestCase):
 
 
     # Remove resources that was created
-   # def tearDown(self):
-        #resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
-        #resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
+    def tearDown(self):
+        resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
+        resp = requests.delete(wazicloud_url + '/devices/' + self.dev_id)
 
 
 class TestUplink(unittest.TestCase):

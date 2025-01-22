@@ -7,98 +7,116 @@ server {
 		root /var/www/Staging;
 	}
 }
+
 server {
 	listen 80;
 	server_name jenkins.staging.waziup.io;
 
 	location / {
-        	proxy_pass http://localhost:8123/;
+		proxy_pass http://localhost:8123/;
 		proxy_set_header Host $host;
 	}
 }
+
 server {
 	listen 80;
 	server_name wazicloud-dashboard.staging.waziup.io;
 	location / {
-        	proxy_pass http://localhost:3000/;
+		proxy_pass http://localhost:3000/;
 		proxy_redirect     off;
 		proxy_set_header   Host $host;
 	}
 }
+
 server {
 	listen 80;
 	server_name wazicloud-api.staging.waziup.io;
 	location / {
-        	proxy_pass http://localhost:800/;
+		proxy_pass http://localhost:800/;
 	}
 }
+
 server {
 	listen 80;
 	server_name wazicloud-keycloak.staging.waziup.io;
 
 	location / {
-        	proxy_pass http://localhost:8080/;
+		proxy_pass http://localhost:8080/;
 		proxy_set_header Host $host;
 	}
 }
+
 server {
 	listen 80;
 	server_name wazigate-dashboard.staging.waziup.io;
 
 	location / {
-        	proxy_pass http://172.16.11.208:80/;
+ 		proxy_pass http://172.16.11.208:80/;
 	}
 }
+
 server {
 	listen 80;
 	server_name wazigate-dashboard-stable.staging.waziup.io;
 
 	location / {
-        	proxy_pass http://172.16.11.161:80/;
+		proxy_pass http://172.16.11.161:80/;
 	}
 }
+
 server {
 	listen 80;
 	server_name wazigate-chirpstack.staging.waziup.io;
 
 	location / {
-        	proxy_pass http://172.16.11.208:8080/;
+		proxy_pass http://172.16.11.208:8080/;
 	}
 }
+
 server {
 	listen 80;
 	server_name wazidev-api.staging.waziup.io;
+
 	location / {
-        	proxy_pass http://localhost:5000/;
+		proxy_pass http://localhost:5000/;
 	}
 }
+
 server {
 	listen 80;
 	server_name lab.staging.waziup.io;
+
 	location / {
-        	proxy_pass http://localhost:8467/;
+		proxy_pass http://localhost:8467/;
 		proxy_set_header Host $host;
 	}
 }
+
 server {
 	listen 80;
 	server_name lab-stable.staging.waziup.io;
+
 	location / {
-        	proxy_pass http://localhost:8468/;
+		proxy_pass http://localhost:8468/;
 		proxy_set_header Host $host;
 	}
 }
+
 server {
 	listen 80;
 	server_name website.staging.waziup.io;
+
 	location / {
-        	proxy_pass http://localhost:81/;
+		root /var/www/website.staging.waziup.io;
 	}
 }
+
 server {
 	listen 80;
 	server_name webhook.staging.waziup.io;
+
 	location / {
-        	proxy_pass http://localhost:9000/;
+		proxy_pass http://localhost:9000/;
+		proxy_set_header Host $host;
 	}
 }

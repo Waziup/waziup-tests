@@ -25,6 +25,11 @@ Add a new udev rule named "/etc/udev/rules.d/99-usbserial.rules":
 ```
 ACTION=="add",ENV{ID_BUS}=="usb",ENV{ID_SERIAL}=="1a86_USB2.0-Serial",SYMLINK+="ttyUSBWaziDev"
 ```
+Restart udev:
+```
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+```
 
 This will add a device "/dev/ttyUSBWaziDev" attached to the WaziDev.
 
