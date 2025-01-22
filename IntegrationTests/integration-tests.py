@@ -183,7 +183,7 @@ class TestUplink(unittest.TestCase):
         # Send a value with WaziDev
         res = interface.sendLoRaWAN(62)
         print(res)
-        time.sleep(12)
+        time.sleep(24)
 
         # Check that the value has been received at the WaziGate
         resp = requests.get(wazigate_url + '/devices/' + self.dev_id + "/sensors", headers = self.token)
