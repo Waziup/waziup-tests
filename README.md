@@ -64,7 +64,7 @@ https://github.com/Waziup/WaziDev/blob/master/tests/LoRaWAN-test/LoRaWAN-test.in
 The WaziDev needs to be connected to your Linux PC using a USB cable. It should be available under `/dev/ttyUSB0`
 
 WaziLab Stable
-==============
+--------------
 
 A replicat of the Live WaziLab is running on the Staging server. 
 It is started up manually using this [docker-compose.yml](Staging/wazilab-stable/docker-compose.yml).
