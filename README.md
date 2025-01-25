@@ -4,13 +4,13 @@ Waziup platform Tests
 This repository defines tests for the full Waziup platform.
 
 Proxy configuration
-===================
+-------------------
 
 NGINX is running on the staging server with [this config](Staging/nginx-config).
 The idea is to ventilate all the subdomains of `staging.waziup.io` to the various services of the staging server.
 
 WaziDev
-=======
+-------
 
 **A WaziDev is permanently attached to the test server.**
 The WaziDev is loaded with [this program](https://github.com/Waziup/WaziDev/blob/master/tests/LoRaWAN-test/LoRaWAN-test.ino) (see also the README file). The program allows to send USB commands to the WaziDev, in order to send LoRaWAN packets.
@@ -37,7 +37,7 @@ sudo udevadm trigger
 This will add a device "/dev/ttyUSBWaziDev" attached to the WaziDev.
 
 Waziup platform integration tests
-=================================
+---------------------------------
 
 The goal of integration testing is to test the full chain:
 WaziDev <-> WaziGate <-> WaziCloud
