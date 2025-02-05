@@ -208,9 +208,9 @@ class TestDownlink(unittest.TestCase):
         #resp = requests.delete(wazigate_url + '/devices/' + self.dev_id, headers = self.token)
 
 
-    # Test value sent from WaziDev
+    # Test value receive on WaziDev
     def test_wazidev_value_downlink(self):
-        """ Test value upload from WaziDev to gateway"""
+        """ Test value download from gateway to wazidev"""
 
         # Create a new device on WaziGate
         resp = requests.post(wazigate_url + '/devices', json = wazigate_device, headers = self.token)
