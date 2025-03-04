@@ -52,6 +52,7 @@ wazigate_url = 'http://' + wazigate_ip
 wazicloud_url = os.getenv('WAZICLOUD_URL', 'http://172.16.11.191:800/api/v2')
 wazicloud_mqtt = os.getenv('WAZICLOUD_MQTT', 'mqtt://172.16.11.191:3883')
 
+print('wazigate_url=' + wazigate_url)
 wazigate_device = {
   'name': 'test',
   'sensors': [],
