@@ -225,6 +225,10 @@ class TestDownlink(unittest.TestCase):
         resp = requests.post(wazigate_url + '/devices/' + self.dev_id + '/actuators', json={'name':'test'}, headers = self.token)
         self.assertEqual(resp.status_code, 200, "Cannot create the actuator")
 
+        # Actuate on the Gateway 
+        resp = requests.put(wazigate_url + '/devices/' + self.dev_id + '/actuators/test/value', json=8)
+        self.assertEqual(resp.status_code, 200, "Cannot actuate on the Gateway")
+
         # Actuate on the Cloud 
         resp = requests.put(wazicloud_url + '/devices/' + self.dev_id + '/actuators/test/value', json=10)
         self.assertEqual(resp.status_code, 200, "Cannot actuate on the Cloud")
