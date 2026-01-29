@@ -36,6 +36,19 @@ sudo udevadm trigger
 
 This will add a device "/dev/ttyUSBWaziDev" attached to the WaziDev.
 
+WaziGate
+--------
+
+Two WaziGates are set up on the same network than the staging server.
+- The first WaziGate is for "Continuous Integration". It will be updated by Jenkins every night with the WaziGate software.
+- The second is for long-term testing. It is flashed with the last stable and tested version.
+
+Both WaziGates are available under the WaziGate section on staging.waziup.io.
+
+In case of local IP change, the IPs need to be reconfigured in:
+- NGINX on the Staging server (/etc/nginx/sites-enabled/default)
+- The global variables in Jenkins.
+
 Waziup platform integration tests
 ---------------------------------
 
@@ -47,7 +60,7 @@ You can find the tests [here](IntegrationTests/integration-tests.py).
 You can run them like this:
 
 ```
-export WAZIGATE_IP=172.16.11.192 
+export WAZIGATE_IP=172.16.11.192
 export WAZICLOUD_URL=http://35.157.161.231:800/api/v2 
 export WAZICLOUD_MQTT=mqtt://35.157.161.231:3883 
 sudo -E python3 integration-tests.py
