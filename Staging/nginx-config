@@ -51,7 +51,11 @@ server {
 	server_name wazigate-dashboard.staging.waziup.io;
 
 	location / {
+<<<<<<< Updated upstream
  		proxy_pass http://172.16.11.208:80/;
+=======
+        	proxy_pass http://172.16.11.104:80/;
+>>>>>>> Stashed changes
 	}
 }
 
@@ -60,7 +64,11 @@ server {
 	server_name wazigate-dashboard-stable.staging.waziup.io;
 
 	location / {
+<<<<<<< Updated upstream
 		proxy_pass http://172.16.11.161:80/;
+=======
+        	proxy_pass http://172.16.11.182:80/;
+>>>>>>> Stashed changes
 	}
 }
 
@@ -69,7 +77,11 @@ server {
 	server_name wazigate-chirpstack.staging.waziup.io;
 
 	location / {
+<<<<<<< Updated upstream
 		proxy_pass http://172.16.11.208:8080/;
+=======
+        	proxy_pass http://172.16.11.104:8080/;
+>>>>>>> Stashed changes
 	}
 }
 
@@ -104,10 +116,23 @@ server {
 
 server {
 	listen 80;
+	server_name lab-test.staging.waziup.io;
+	location / {
+        	proxy_pass http://localhost:12345/;
+		proxy_set_header Host $host;
+	}
+}
+server {
+	listen 80;
 	server_name website.staging.waziup.io;
 
 	location / {
+<<<<<<< Updated upstream
 		root /var/www/website.staging.waziup.io;
+=======
+        	# proxy_pass http://localhost:81/;
+            root /var/www/website.staging.waziup.io;
+>>>>>>> Stashed changes
 	}
 }
 
@@ -118,5 +143,19 @@ server {
 	location / {
 		proxy_pass http://localhost:9000/;
 		proxy_set_header Host $host;
+	}
+}
+server {
+	listen 80;
+	server_name spaceiot.staging.waziup.io;
+	location / {
+        	proxy_pass http://localhost:4173/;
+	}
+}
+server {
+	listen 80;
+	server_name porai-backend.staging.waziup.io;
+	location / {
+        	proxy_pass http://localhost:8018/;
 	}
 }
