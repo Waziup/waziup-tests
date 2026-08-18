@@ -51,11 +51,7 @@ server {
 	server_name wazigate-dashboard.staging.waziup.io;
 
 	location / {
-<<<<<<< Updated upstream
- 		proxy_pass http://172.16.11.208:80/;
-=======
         	proxy_pass http://172.16.11.104:80/;
->>>>>>> Stashed changes
 	}
 }
 
@@ -64,11 +60,7 @@ server {
 	server_name wazigate-dashboard-stable.staging.waziup.io;
 
 	location / {
-<<<<<<< Updated upstream
-		proxy_pass http://172.16.11.161:80/;
-=======
         	proxy_pass http://172.16.11.182:80/;
->>>>>>> Stashed changes
 	}
 }
 
@@ -77,11 +69,7 @@ server {
 	server_name wazigate-chirpstack.staging.waziup.io;
 
 	location / {
-<<<<<<< Updated upstream
-		proxy_pass http://172.16.11.208:8080/;
-=======
         	proxy_pass http://172.16.11.104:8080/;
->>>>>>> Stashed changes
 	}
 }
 
@@ -127,12 +115,8 @@ server {
 	server_name website.staging.waziup.io;
 
 	location / {
-<<<<<<< Updated upstream
-		root /var/www/website.staging.waziup.io;
-=======
         	# proxy_pass http://localhost:81/;
             root /var/www/website.staging.waziup.io;
->>>>>>> Stashed changes
 	}
 }
 
